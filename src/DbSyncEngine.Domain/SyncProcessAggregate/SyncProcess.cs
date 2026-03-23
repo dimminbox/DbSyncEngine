@@ -1,0 +1,88 @@
+using DbSyncEngine.Domain.SyncProcessAggregate.Enums;
+using DbSyncEngine.Domain.SyncProcessAggregate.ValueObjects;
+
+namespace DbSyncEngine.Domain.SyncProcessAggregate;
+
+public class SyncProcess
+{
+    public long Id { get; private set; }
+
+    public SyncDirection Direction { get; private set; }
+
+    public ProgressKey? LastProcessedKey { get; private set; }
+
+    public bool IsCompleted { get; private set; }
+
+    public bool RestartRequested { get; private set; }
+
+    public DateTime LastUpdatedUtc { get; private set; }
+
+    public long TotalProcessedRows { get; private set; }
+
+    public int TotalWriteErrors { get; private set; }
+
+    public int RestartCount { get; private set; }
+
+    private SyncProcess()
+    {
+    }
+
+    private SyncProcess(SyncDirection direction)
+    {
+        Direction = direction;
+        ResetInternal();
+    }
+
+    public static SyncProcess CreateNew(SyncDirection direction)
+        => new SyncProcess(direction);
+
+    public void MarkProcessed(ProgressKey key, long rows)
+    {
+        LastProcessedKey = key;
+        TotalProcessedRows += rows;
+        LastUpdatedUtc = DateTime.UtcNow;
+    }
+
+    public void MarkWriteError()
+    {
+        TotalWriteErrors++;
+        LastUpdatedUtc = DateTime.UtcNow;
+    }
+
+    public void MarkCompleted()
+    {
+        IsCompleted = true;
+        LastUpdatedUtc = DateTime.UtcNow;
+    }
+
+    public void RequestRestart()
+    {
+        RestartRequested = true;
+        LastUpdatedUtc = DateTime.UtcNow;
+    }
+
+    public void Reset()
+    {
+        RestartCount++;
+        ResetInternal();
+    }
+
+    private void ResetInternal()
+    {
+        LastProcessedKey = null;
+        IsCompleted = false;
+        RestartRequested = false;
+        TotalProcessedRows = 0;
+        TotalWriteErrors = 0;
+        LastUpdatedUtc = DateTime.UtcNow;
+    }
+
+    public void UpdateProgress(object newKey)
+    {
+        if (newKey is null)
+            throw new ArgumentNullException(nameof(newKey));
+        LastProcessedKey = new ProgressKey(newKey.ToString()!);
+        TotalProcessedRows++;
+        LastUpdatedUtc = DateTime.UtcNow;
+    }
+}

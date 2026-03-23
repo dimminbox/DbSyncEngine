@@ -1,0 +1,30 @@
+<Project>
+	<PropertyGroup>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+		<CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageVersion Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="9.0.0"/>
+		<PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8"/>
+		<PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0"/>
+		<PackageVersion Include="Newtonsoft.Json" Version="13.0.3"/>
+		<PackageVersion Include="Swashbuckle.AspNetCore" Version="6.8.1"/>
+		<PackageVersion Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.8.1"/>
+		<PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.8.1"/>
+		<PackageVersion Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0"/>
+		<PackageVersion Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.1.0"/>
+        <PackageVersion Include="Microsoft.Extensions.Hosting" Version="8.0.1"/>
+		<PackageVersion Include="prometheus-net.AspNetCore" Version="8.2.1"/>
+		<PackageVersion Include="MySqlConnector" Version="2.3.7"/>
+		<PackageVersion Include="Dapper" Version="2.1.66"/>
+		<PackageVersion Include="Npgsql" Version="9.0.2"/>
+        <PackageVersion Include="Polly" Version="8.6.6"/>
+		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
+		<PackageVersion Include="Moq" Version="4.13.1" />
+		<PackageVersion Include="AutoFixture" Version="4.11.0" />
+		<PackageVersion Include="xunit" Version="2.4.1" />
+		<PackageVersion Include="xunit.runner.visualstudio" Version="2.4.1" />
+		<PackageVersion Include="coverlet.collector" Version="6.0.4" />
+	</ItemGroup>
+</Project>

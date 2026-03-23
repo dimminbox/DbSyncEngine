@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Dapper" />
+        <PackageReference Include="MySqlConnector" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\DbSyncEngine.Application\DbSyncEngine.Application.csproj" />
+      <ProjectReference Include="..\DbSyncEngine.Domain\DbSyncEngine.Domain.csproj" />
+    </ItemGroup>
+
+</Project>
