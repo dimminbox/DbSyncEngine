@@ -1,5 +1,6 @@
 using System.Data;
 using DbSyncEngine.Infrastructure.Persistence.Abstractions;
+using Microsoft.Data.Sqlite;
 using MySqlConnector;
 using Npgsql;
 
@@ -11,6 +12,7 @@ public class DbConnectionFactory : IDbConnectionFactory
     {
         return provider switch
         {
+            "SQLite" => new SqliteConnection(connectionString),
             "MySQL"    => new MySqlConnection(connectionString),
             "Postgres" => new NpgsqlConnection(connectionString),
             _ => throw new NotSupportedException($"Unsupported provider: {provider}")

@@ -21,7 +21,7 @@ public class SyncProcessRepositoryFactory : ISyncProcessRepositoryFactory
 
     public ISyncProcessRepository Create()
     {
-        var conn = _connections.Create("Postgres", _connectionString);
+        var conn = _connections.Create("SQLite", _connectionString);
         return new SyncProcessRepository(conn);
     }
 }
