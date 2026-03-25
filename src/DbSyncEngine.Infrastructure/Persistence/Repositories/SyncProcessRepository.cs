@@ -18,13 +18,31 @@ public class SyncProcessRepository : DapperRepository<SyncProcess>, ISyncProcess
     public Task<SyncProcess?> GetByDirectionAsync(SyncDirection direction, CancellationToken ct)
         => QuerySingleAsync(SyncProcessSql.GetByDirection, new { direction });
 
+    public Task<SyncProcess?> GetAsync(
+        string entityName,
+        string sourceProvider,
+        string targetProvider,
+        SyncDirection direction,
+        CancellationToken ct)
+    {
+        return QuerySingleAsync(
+            SyncProcessSql.GetByCompositeKey,
+            new
+            {
+                entityName,
+                sourceProvider,
+                targetProvider,
+                direction
+            });
+    }
+
     public async Task SaveAsync(SyncProcess process, CancellationToken ct)
     {
         if (process.Id == 0)
         {
             var id = await Connection.ExecuteScalarAsync<long>(
                 SyncProcessSql.Insert, process);
-            process.SetId(id); // приватный setter
+            process.SetId(id);
         }
         else
         {

@@ -2,6 +2,27 @@ namespace DbSyncEngine.Infrastructure.Persistence.Repositories;
 
 public static class SyncProcessSql
 {
+    public const string GetByCompositeKey = @"
+    SELECT 
+        id,
+        entity_name,
+        source_provider,
+        target_provider,
+        direction,
+        last_processed_key,
+        is_completed,
+        restart_requested,
+        last_updated_utc,
+        total_processed_rows,
+        total_write_errors,
+        restart_count
+    FROM sync_process
+    WHERE entity_name = @entityName
+      AND source_provider = @sourceProvider
+      AND target_provider = @targetProvider
+      AND direction = @direction
+    LIMIT 1;
+";
     public const string GetById = @"
         SELECT 
             id,

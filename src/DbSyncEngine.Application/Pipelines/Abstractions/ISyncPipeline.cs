@@ -1,4 +1,4 @@
-using DbSyncEngine.Application.Helper;
+using DbSyncEngine.Domain.SyncProcessAggregate.Enums;
 
 namespace DbSyncEngine.Application.Pipelines.Abstractions;
 

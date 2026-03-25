@@ -6,7 +6,10 @@ namespace DbSyncEngine.Domain.SyncProcessAggregate;
 public class SyncProcess
 {
     public long Id { get; private set; }
-
+    public string EntityName { get; private set; }
+    public string SourceProvider { get; private set; }
+    public string TargetProvider { get; private set; }
+    
     public SyncDirection Direction { get; private set; }
 
     public ProgressKey? LastProcessedKey { get; private set; }
@@ -27,14 +30,25 @@ public class SyncProcess
     {
     }
 
-    private SyncProcess(SyncDirection direction)
+    private SyncProcess(
+        string entityName,
+        string sourceProvider,
+        string targetProvider,
+        SyncDirection direction)
     {
+        EntityName = entityName;
+        SourceProvider = sourceProvider;
+        TargetProvider = targetProvider;
         Direction = direction;
         ResetInternal();
     }
 
-    public static SyncProcess CreateNew(SyncDirection direction)
-        => new SyncProcess(direction);
+    public static SyncProcess CreateNew(
+        string entityName,
+        string sourceProvider,
+        string targetProvider,
+        SyncDirection direction)
+        => new SyncProcess(entityName, sourceProvider, targetProvider, direction);
 
     public void MarkProcessed(ProgressKey key, long rows)
     {
@@ -53,6 +67,11 @@ public class SyncProcess
     {
         IsCompleted = true;
         LastUpdatedUtc = DateTime.UtcNow;
+    }
+    
+    public void SetId(long id)
+    {
+        Id = id;
     }
 
     public void RequestRestart()
