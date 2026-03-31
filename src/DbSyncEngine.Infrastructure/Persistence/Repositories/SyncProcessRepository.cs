@@ -1,6 +1,6 @@
 using System.Data;
 using Dapper;
-using DbSyncEngine.Application.Persistence.Abstracts;
+using DbSyncEngine.Application.Persistence;
 using DbSyncEngine.Domain.SyncProcessAggregate;
 using DbSyncEngine.Domain.SyncProcessAggregate.Enums;
 using DbSyncEngine.Infrastructure.Persistence.Common;

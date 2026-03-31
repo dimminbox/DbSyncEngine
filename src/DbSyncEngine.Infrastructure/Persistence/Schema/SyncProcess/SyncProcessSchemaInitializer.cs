@@ -1,7 +1,7 @@
 using System.Data;
 using Dapper;
 
-namespace DbSyncEngine.Infrastructure.Persistence.Schema;
+namespace DbSyncEngine.Infrastructure.Persistence.Schema.SyncProcess;
 
 public class SyncProcessSchemaInitializer
 {

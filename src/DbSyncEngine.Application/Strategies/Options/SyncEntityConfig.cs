@@ -8,6 +8,7 @@ public class SyncEntityConfig
     public DbEndpoint Target { get; set; } = default!;
 
     public List<string> Columns { get; set; } = new();
+    public NormalizerOptions NormalizerOptions { get; init; }
     public string Key { get; set; } = default!;
 
     public int ChunkSize { get; set; } = 10000;

@@ -1,4 +1,4 @@
-using DbSyncEngine.Application.Persistence.Abstracts;
+namespace DbSyncEngine.Application.Persistence;
 
 public interface ITableDataRepositoryFactory
 {

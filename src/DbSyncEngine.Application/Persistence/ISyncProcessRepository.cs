@@ -1,7 +1,7 @@
 using DbSyncEngine.Domain.SyncProcessAggregate;
 using DbSyncEngine.Domain.SyncProcessAggregate.Enums;
 
-namespace DbSyncEngine.Application.Persistence.Abstracts;
+namespace DbSyncEngine.Application.Persistence;
 
 public interface ISyncProcessRepository
 {

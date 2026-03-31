@@ -1,4 +1,5 @@
 using DbSyncEngine.Infrastructure.Persistence.Schema;
+using DbSyncEngine.Infrastructure.Persistence.Schema.SyncProcess;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

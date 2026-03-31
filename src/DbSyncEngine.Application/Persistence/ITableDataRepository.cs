@@ -1,7 +1,7 @@
 
 using DbSyncEngine.Application.Pipelines.Common;
 
-namespace DbSyncEngine.Application.Persistence.Abstracts;
+namespace DbSyncEngine.Application.Persistence;
 
 public interface ITableDataRepository
 {

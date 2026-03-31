@@ -1,4 +1,4 @@
-using DbSyncEngine.Application.Persistence.Abstracts;
+using DbSyncEngine.Application.Persistence;
 using DbSyncEngine.Application.Pipelines.Abstractions;
 using DbSyncEngine.Application.Pipelines.Common;
 using DbSyncEngine.Domain.SyncProcessAggregate;

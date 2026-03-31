@@ -1,5 +1,5 @@
 using Dapper;
-using DbSyncEngine.Application.Persistence.Abstracts;
+using DbSyncEngine.Application.Persistence;
 using DbSyncEngine.Application.Pipelines.Common;
 using DbSyncEngine.Infrastructure.Persistence.Abstractions;
 using MySqlConnector;

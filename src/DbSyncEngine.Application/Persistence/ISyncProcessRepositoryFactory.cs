@@ -1,4 +1,4 @@
-namespace DbSyncEngine.Application.Persistence.Abstracts;
+namespace DbSyncEngine.Application.Persistence;
 
 public interface ISyncProcessRepositoryFactory
 {

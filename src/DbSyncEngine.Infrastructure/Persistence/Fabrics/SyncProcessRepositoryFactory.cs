@@ -1,4 +1,4 @@
-using DbSyncEngine.Application.Persistence.Abstracts;
+using DbSyncEngine.Application.Persistence;
 using DbSyncEngine.Infrastructure.Persistence.Abstractions;
 using DbSyncEngine.Infrastructure.Persistence.Repositories;
 using Microsoft.Extensions.Configuration;

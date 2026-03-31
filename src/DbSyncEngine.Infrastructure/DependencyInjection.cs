@@ -1,9 +1,12 @@
 using DbSyncEngine.Application.Normalization;
-using DbSyncEngine.Application.Persistence.Abstracts;
+using DbSyncEngine.Application.Persistence;
+using DbSyncEngine.Application.Persistence.Schema;
 using DbSyncEngine.Infrastructure.Persistence.Abstractions;
 using DbSyncEngine.Infrastructure.Persistence.Fabrics;
 using DbSyncEngine.Infrastructure.Persistence.Normalization.Implementation;
 using DbSyncEngine.Infrastructure.Persistence.Repositories;
+using DbSyncEngine.Infrastructure.Persistence.Schema;
+using DbSyncEngine.Infrastructure.Persistence.Schema.Readers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,7 +18,8 @@ public static class DependencyInjection
         ConfigurationManager configuration)
     {
         services
-            .AddDataRepositories()
+            .AddSchema()
+            .AddTableData()
             .AddSyncRepositories()
             .AddNormalization();
         return services;
@@ -30,7 +34,15 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddDataRepositories(this IServiceCollection services)
+    private static IServiceCollection AddSchema(this IServiceCollection services)
+    {
+        services.AddSingleton<MySqlSchemaReader>();
+        services.AddSingleton<PostgresSchemaReader>();
+        services.AddSingleton<ISchemaReaderFactory, SchemaReaderFactory>();
+        return services;
+    }
+
+    private static IServiceCollection AddTableData(this IServiceCollection services)
     {
         services.AddTransient<ITableDataRepository, MySqlTableDataRepository>();
         services.AddTransient<ITableDataRepository, PostgresTableDataRepository>();
@@ -41,9 +53,9 @@ public static class DependencyInjection
 
     private static IServiceCollection AddNormalization(this IServiceCollection services)
     {
-        services.AddTransient<IValueNormalizer, MySqlValueNormalizer>();
-        services.AddTransient<IValueNormalizer, PostgresValueNormalizer>();
-        services.AddTransient<IValueNormalizerFactory, ValueNormalizerFactory>();
+        services.AddSingleton<IValueNormalizer, MySqlValueNormalizer>();
+        services.AddSingleton<IValueNormalizer, PostgresValueNormalizer>();
+        services.AddSingleton<IValueNormalizerFactory, ValueNormalizerFactory>();
         return services;
     }
 }
