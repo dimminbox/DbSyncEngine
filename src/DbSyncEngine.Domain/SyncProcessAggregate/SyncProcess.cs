@@ -1,5 +1,4 @@
 using DbSyncEngine.Domain.SyncProcessAggregate.Enums;
-using DbSyncEngine.Domain.SyncProcessAggregate.ValueObjects;
 
 namespace DbSyncEngine.Domain.SyncProcessAggregate;
 
@@ -9,10 +8,11 @@ public class SyncProcess
     public string EntityName { get; private set; }
     public string SourceProvider { get; private set; }
     public string TargetProvider { get; private set; }
-    
-    public SyncDirection Direction { get; private set; }
 
-    public ProgressKey? LastProcessedKey { get; private set; }
+    public SyncDirection Direction { get; private set; }
+    public string DirectionString => Direction.ToString();
+
+    public string LastProcessedKey { get; private set; }
 
     public bool IsCompleted { get; private set; }
 
@@ -50,7 +50,7 @@ public class SyncProcess
         SyncDirection direction)
         => new SyncProcess(entityName, sourceProvider, targetProvider, direction);
 
-    public void MarkProcessed(ProgressKey key, long rows)
+    public void MarkProcessed(string key, long rows)
     {
         LastProcessedKey = key;
         TotalProcessedRows += rows;
@@ -68,7 +68,7 @@ public class SyncProcess
         IsCompleted = true;
         LastUpdatedUtc = DateTime.UtcNow;
     }
-    
+
     public void SetId(long id)
     {
         Id = id;
@@ -100,7 +100,7 @@ public class SyncProcess
     {
         if (newKey is null)
             throw new ArgumentNullException(nameof(newKey));
-        LastProcessedKey = new ProgressKey(newKey.ToString()!);
+        LastProcessedKey = newKey.ToString();
         TotalProcessedRows++;
         LastUpdatedUtc = DateTime.UtcNow;
     }

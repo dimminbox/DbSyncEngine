@@ -3,83 +3,78 @@ namespace DbSyncEngine.Infrastructure.Persistence.Repositories;
 public static class SyncProcessSql
 {
     public const string GetByCompositeKey = @"
-    SELECT 
-        id,
-        entity_name,
-        source_provider,
-        target_provider,
-        direction,
-        last_processed_key,
-        is_completed,
-        restart_requested,
-        last_updated_utc,
-        total_processed_rows,
-        total_write_errors,
-        restart_count
-    FROM sync_process
-    WHERE entity_name = @entityName
-      AND source_provider = @sourceProvider
-      AND target_provider = @targetProvider
-      AND direction = @direction
-    LIMIT 1;
-";
-    public const string GetById = @"
         SELECT 
             id,
+            entity_name,
+            source_provider,
+            target_provider,
+            direction,
             last_processed_key,
             is_completed,
             restart_requested,
             last_updated_utc,
             total_processed_rows,
             total_write_errors,
-            restart_count,
-            sync_direction
-        FROM orders.sync_process
-        WHERE id = @id;
-    ";
-
-    public const string GetByDirection = @"
-        SELECT 
-            id,
-            last_processed_key,
-            is_completed,
-            restart_requested,
-            last_updated_utc,
-            total_processed_rows,
-            total_write_errors,
-            restart_count,
-            sync_direction
-        FROM orders.sync_process
-        WHERE sync_direction = @direction
+            restart_count
+        FROM sync_process
+        WHERE entity_name = @EntityName
+          AND source_provider = @SourceProvider
+          AND target_provider = @TargetProvider
+          AND direction = @DirectionString
         LIMIT 1;
     ";
 
-    public const string Insert = @"
-        INSERT INTO orders.sync_process (
+    public const string GetById = @"
+        SELECT 
+            id,
+            entity_name,
+            source_provider,
+            target_provider,
+            direction,
             last_processed_key,
             is_completed,
             restart_requested,
             last_updated_utc,
             total_processed_rows,
             total_write_errors,
-            restart_count,
-            sync_direction
+            restart_count
+        FROM sync_process
+        WHERE id = @Id;
+    ";
+
+    public const string Insert = @"
+        INSERT INTO sync_process (
+            entity_name,
+            source_provider,
+            target_provider,
+            direction,
+            last_processed_key,
+            is_completed,
+            restart_requested,
+            last_updated_utc,
+            total_processed_rows,
+            total_write_errors,
+            restart_count
         )
         VALUES (
+            @EntityName,
+            @SourceProvider,
+            @TargetProvider,
+            @DirectionString,
             @LastProcessedKey,
             @IsCompleted,
             @RestartRequested,
             @LastUpdatedUtc,
             @TotalProcessedRows,
             @TotalWriteErrors,
-            @RestartCount,
-            @Direction
-        )
-        RETURNING id;
+            @RestartCount
+        );
+
+        SELECT last_insert_rowid();
     ";
 
     public const string Update = @"
-        UPDATE orders.sync_process
+        UPDATE sync_process
         SET
             last_processed_key = @LastProcessedKey,
             is_completed = @IsCompleted,
@@ -87,8 +82,7 @@ public static class SyncProcessSql
             last_updated_utc = @LastUpdatedUtc,
             total_processed_rows = @TotalProcessedRows,
             total_write_errors = @TotalWriteErrors,
-            restart_count = @RestartCount,
-            sync_direction = @Direction
+            restart_count = @RestartCount
         WHERE id = @Id;
     ";
 }

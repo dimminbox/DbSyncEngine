@@ -1,27 +1,31 @@
+using System.Reflection;
 using DbSyncEngine.Application.Persistence;
+using DbSyncEngine.Application.Strategies.Options;
 using DbSyncEngine.Infrastructure.Persistence.Abstractions;
 using DbSyncEngine.Infrastructure.Persistence.Repositories;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace DbSyncEngine.Infrastructure.Persistence.Fabrics;
 
 public class SyncProcessRepositoryFactory : ISyncProcessRepositoryFactory
 {
-    private readonly IDbConnectionFactory _connections;
+    private readonly IDbConnectionFactory _connectionFactory;
     private readonly string _connectionString;
 
     public SyncProcessRepositoryFactory(
-        IDbConnectionFactory connections,
-        IConfiguration config)
+        IDbConnectionFactory connectionFactory,
+        IOptionsMonitor<SyncConfig> config)
     {
-        _connections = connections;
-        _connectionString = config.GetConnectionString("SyncProcessDb")
-                            ?? throw new InvalidOperationException("Missing SyncProcessDb connection string");
+        _connectionFactory = connectionFactory;
+        _connectionString = config.CurrentValue.SyncProcessDb ??
+                            throw new InvalidOperationException("Missing SyncProcessDb connection string");
     }
 
     public ISyncProcessRepository Create()
     {
-        var conn = _connections.Create("SQLite", _connectionString);
+        var conn = _connectionFactory.Create("SQLite", _connectionString);
         return new SyncProcessRepository(conn);
     }
 }

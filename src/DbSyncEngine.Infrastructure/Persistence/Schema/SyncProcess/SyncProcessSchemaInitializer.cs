@@ -11,7 +11,7 @@ public class SyncProcessSchemaInitializer
             entity_name TEXT NOT NULL,
             source_provider TEXT NOT NULL,
             target_provider TEXT NOT NULL,
-            direction INTEGER NOT NULL,
+            direction TEXT NOT NULL,
             last_processed_key TEXT NULL,
             is_completed INTEGER NOT NULL DEFAULT 0,
             restart_requested INTEGER NOT NULL DEFAULT 0,

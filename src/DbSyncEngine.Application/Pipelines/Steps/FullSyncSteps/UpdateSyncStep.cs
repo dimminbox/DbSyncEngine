@@ -7,19 +7,20 @@ namespace DbSyncEngine.Application.Pipelines.Steps.FullSyncSteps;
 
 public class UpdateSyncStep : ISyncStep
 {
-    private readonly ISyncProcessRepository _repository;
+    private readonly ISyncProcessRepositoryFactory _factory;
     private readonly ILogger<UpdateSyncStep> _logger;
 
     public UpdateSyncStep(
-        ISyncProcessRepository repository,
+        ISyncProcessRepositoryFactory factory,
         ILogger<UpdateSyncStep> logger)
     {
-        _repository = repository;
+        _factory = factory;
         _logger = logger;
     }
 
     public async Task HandleAsync(SyncContext ctx, Func<Task> next)
     {
+        var repo = _factory.Create();
         var rows = ctx.CurrentBatch;
         var config = ctx.Config;
 
@@ -27,7 +28,7 @@ public class UpdateSyncStep : ISyncStep
         if (rows == null || rows.Count == 0)
         {
             ctx.Process.MarkCompleted();
-            await _repository.SaveAsync(ctx.Process, ctx.CancellationToken);
+            await repo.SaveAsync(ctx.Process, ctx.CancellationToken);
 
             _logger.LogInformation(
                 "Full sync completed for entity {Entity} ({Source} → {Target})",
@@ -48,7 +49,7 @@ public class UpdateSyncStep : ISyncStep
 
         ctx.Process.UpdateProgress(lastKeyValue);
 
-        await _repository.SaveAsync(ctx.Process, ctx.CancellationToken);
+        await repo.SaveAsync(ctx.Process, ctx.CancellationToken);
 
         _logger.LogInformation(
             "Updated sync state for {Entity}: key={Key}, totalRows={Rows}",

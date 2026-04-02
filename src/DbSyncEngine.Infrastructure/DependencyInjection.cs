@@ -1,6 +1,8 @@
 using DbSyncEngine.Application.Normalization;
 using DbSyncEngine.Application.Persistence;
 using DbSyncEngine.Application.Persistence.Schema;
+using DbSyncEngine.Application.Strategies.Abstractions;
+using DbSyncEngine.Application.Strategies.Implementations;
 using DbSyncEngine.Infrastructure.Persistence.Abstractions;
 using DbSyncEngine.Infrastructure.Persistence.Fabrics;
 using DbSyncEngine.Infrastructure.Persistence.Normalization.Implementation;
@@ -30,7 +32,6 @@ public static class DependencyInjection
     {
         services.AddTransient<IDbConnectionFactory, DbConnectionFactory>();
         services.AddTransient<ISyncProcessRepositoryFactory, SyncProcessRepositoryFactory>();
-        services.AddTransient<ISyncProcessRepository, SyncProcessRepository>();
         return services;
     }
 

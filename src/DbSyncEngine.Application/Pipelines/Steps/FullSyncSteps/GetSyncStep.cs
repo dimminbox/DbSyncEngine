@@ -24,6 +24,8 @@ public class GetSyncStep : ISyncStep
         var config = ctx.Config;
 
         var repo = _factory.Create();
+        repo.InitDb();
+        
         var process = await repo.GetAsync(
             config.Name,
             config.Source.Provider,

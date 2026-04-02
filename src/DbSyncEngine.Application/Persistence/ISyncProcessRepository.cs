@@ -5,6 +5,7 @@ namespace DbSyncEngine.Application.Persistence;
 
 public interface ISyncProcessRepository
 {
+    void InitDb();
     Task<SyncProcess?> GetAsync(
         string entityName,
         string sourceProvider,

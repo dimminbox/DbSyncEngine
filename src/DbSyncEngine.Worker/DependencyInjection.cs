@@ -37,7 +37,7 @@ public static class DependencyInjection
 
     private static IServiceCollection BindConfigurations(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<List<SyncEntityConfig>>(configuration.GetSection("Sync"));
+        services.Configure<SyncConfig>(configuration.GetSection("Sync"));
         return services;
     }
 }

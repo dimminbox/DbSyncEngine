@@ -9,36 +9,36 @@ namespace DbSyncEngine.Worker;
 public class SyncBackgroundService : BackgroundService
 {
     private readonly ISyncStrategyFactory _factory;
-    private readonly IOptionsMonitor<List<SyncEntityConfig>> _configs;
+    private readonly IOptionsMonitor<SyncConfig> _config;
 
     public SyncBackgroundService(
         ISyncStrategyFactory factory,
-        IOptionsMonitor<List<SyncEntityConfig>> configs)
+        IOptionsMonitor<SyncConfig> config)
     {
         _factory = factory;
-        _configs = configs;
+        _config = config;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            var configs = _configs.CurrentValue;
+            var config = _config.CurrentValue;
 
-            foreach (var config in configs)
+            foreach (var configEntity in config.Entities ?? [])
             {
-                var strategy = _factory.Create(config);
+                var strategy = _factory.Create(configEntity);
 
                 var retryPolicy = Policy
                     .Handle<Exception>()
                     .WaitAndRetryAsync(
-                        retryCount: config.MaxInsertRetries,
+                        retryCount: configEntity.MaxInsertRetries,
                         sleepDurationProvider: attempt =>
                             TimeSpan.FromSeconds(Math.Pow(2, attempt)),
                         onRetry: (exception, delay, attempt, _) =>
                         {
                             Console.WriteLine(
-                                $"[{config.Name}] failed on attempt {attempt}. Retrying in {delay}. Error: {exception.Message}");
+                                $"[{configEntity.Name}] failed on attempt {attempt}. Retrying in {delay}. Error: {exception.Message}");
                         });
 
                 try
@@ -50,13 +50,11 @@ public class SyncBackgroundService : BackgroundService
                 catch (Exception ex)
                 {
                     Console.WriteLine(
-                        $"[{config.Name}] failed after all retries. Skipping. Error: {ex.Message}");
+                        $"[{configEntity.Name}] failed after all retries. Skipping. Error: {ex.Message}");
                 }
-            }
 
-            // глобальная пауза между циклами
-            var minInterval = configs.Min(c => c.IntervalSeconds);
-            await Task.Delay(TimeSpan.FromSeconds(minInterval), stoppingToken);
+                await Task.Delay(TimeSpan.FromSeconds(configEntity.IntervalSeconds), stoppingToken);
+            }
         }
     }
 }

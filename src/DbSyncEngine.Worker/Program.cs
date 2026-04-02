@@ -1,4 +1,3 @@
-using DbSyncEngine.Infrastructure.Persistence.Schema;
 using DbSyncEngine.Infrastructure.Persistence.Schema.SyncProcess;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
@@ -12,8 +11,6 @@ namespace DbSyncEngine.Worker
         public static void Main(string[] args)
         {
             var builder = Host.CreateApplicationBuilder(args);
-
-            InitSyncDb(builder);
             Run(builder);
         }
 
@@ -23,14 +20,6 @@ namespace DbSyncEngine.Worker
             builder.Services.AddHostedService<SyncBackgroundService>();
             var app = builder.Build();
             app.Run();
-        }
-
-        private static void InitSyncDb(HostApplicationBuilder builder)
-        {
-            var sqliteConnString = builder.Configuration.GetConnectionString("SyncProcessDb");
-            using var conn = new SqliteConnection(sqliteConnString);
-            conn.Open();
-            SyncProcessSchemaInitializer.EnsureCreated(conn);
         }
     }
 }

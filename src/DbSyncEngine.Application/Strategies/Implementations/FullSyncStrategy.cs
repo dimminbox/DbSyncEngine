@@ -12,14 +12,14 @@ namespace DbSyncEngine.Application.Strategies.Implementations;
 public class FullSyncStrategy : ISyncStrategy
 {
     private readonly IServiceProvider _provider;
-    private readonly IOptionsMonitor<SyncEntityConfig> _options;
+    private readonly SyncEntityConfig _config;
 
     public FullSyncStrategy(
         IServiceProvider provider,
-        IOptionsMonitor<SyncEntityConfig> options)
+        SyncEntityConfig config)
     {
         _provider = provider;
-        _options = options;
+        _config = config;
     }
 
     public Task RunAsync(CancellationToken ct)
@@ -36,7 +36,7 @@ public class FullSyncStrategy : ISyncStrategy
         };
 
 
-        var pipeline = new SyncPipeline(steps, _options);
+        var pipeline = new SyncPipeline(steps, _config);
         return pipeline.RunAsync(SyncDirection.Full, ct);
     }
 }
