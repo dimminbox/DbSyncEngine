@@ -14,4 +14,11 @@ public class ColumnDefinition
     public bool IsNullable { get; set; }
     public int? Length { get; set; }
     public string? DefaultValue { get; set; }
+    public ColumnKind Kind { get; set; } = ColumnKind.Normal;
+}
+
+public enum ColumnKind
+{
+    Normal,
+    Identity
 }

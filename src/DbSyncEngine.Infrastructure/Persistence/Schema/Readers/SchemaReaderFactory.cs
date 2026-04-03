@@ -17,7 +17,7 @@ public class SchemaReaderFactory : ISchemaReaderFactory
         _map = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase)
         {
             ["MySQL"]    = typeof(MySqlSchemaReader),
-            ["Postgres"] = typeof(PostgresSchemaReader),
+            ["PostgreSQL"] = typeof(PostgresSchemaReader),
         };
     }
     

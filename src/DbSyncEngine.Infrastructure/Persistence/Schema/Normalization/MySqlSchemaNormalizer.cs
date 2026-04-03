@@ -20,22 +20,23 @@ namespace DbSyncEngine.Infrastructure.Persistence.Schema.Normalization
                 var colName = ResolveColumnName(c.Name, opts);
                 colName = ApplyCase(colName, opts);
 
-                var mappedType = MapToMySqlType(c.Type, c.Length, opts);
-
-                var defaultValue = opts.PreserveDefaults ? c.DefaultValue : null;
+                var mappedType = MapToMySqlType(c.Type, c.Length, c.Kind, opts);
 
                 return new ColumnDefinition
                 {
                     Name = colName,
                     Type = mappedType,
-                    IsNullable = c.IsNullable,
                     Length = c.Length,
-                    DefaultValue = defaultValue
+                    IsNullable = c.Kind != ColumnKind.Identity && c.IsNullable,
+                    DefaultValue = c.Kind == ColumnKind.Identity
+                        ? null
+                        : (opts.PreserveDefaults ? c.DefaultValue : null),
+                    Kind = c.Kind
                 };
             }).ToList();
 
             var pk = string.IsNullOrWhiteSpace(sourceTable.PrimaryKey)
-                ? string.Empty
+                ? normalizedColumns.FirstOrDefault(c => c.Kind == ColumnKind.Identity)?.Name ?? string.Empty
                 : ApplyCase(sourceTable.PrimaryKey, opts);
 
             return new TableDefinition
@@ -65,11 +66,14 @@ namespace DbSyncEngine.Infrastructure.Persistence.Schema.Normalization
             return opts.PreserveCase ? name : name.ToLowerInvariant();
         }
 
-        private static string MapToMySqlType(string sourceType, int? length, NormalizerOptions opts)
+        private static string MapToMySqlType(string sourceType, int? length, ColumnKind kind, NormalizerOptions opts)
         {
             if (string.IsNullOrWhiteSpace(sourceType)) return "TEXT";
 
             var t = sourceType.Trim().ToLowerInvariant();
+
+            if (kind == ColumnKind.Identity)
+                return "INT AUTO_INCREMENT";
 
             if (t.StartsWith("varchar"))
                 return $"VARCHAR({length ?? opts.DefaultVarcharLength})";

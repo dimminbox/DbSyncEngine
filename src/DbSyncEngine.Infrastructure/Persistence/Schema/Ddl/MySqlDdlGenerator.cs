@@ -81,28 +81,32 @@ public class MySqlDdlGenerator : ITargetDdlGenerator
 
         return t switch
         {
+            "uuid" => "CHAR(36)",
+            "serial" or "serial4" or "int" or "integer" or "int4" => "INT",
+            "bigserial" or "serial8" or "bigint" or "int8" => "BIGINT",
+            "smallint" => "SMALLINT",
             "char" => c.Length.HasValue ? $"CHAR({c.Length.Value})" : "CHAR(1)",
             "text" => "TEXT",
-            "int" or "integer" => "INT",
-            "bigint" => "BIGINT",
-            "smallint" => "SMALLINT",
             "boolean" or "bool" => "TINYINT(1)",
             "datetime" => "DATETIME",
             "timestamp" => "TIMESTAMP",
             "date" => "DATE",
             "decimal" or "numeric" => c.Length.HasValue ? $"DECIMAL({c.Length.Value})" : "DECIMAL(18,2)",
-            "float" => "FLOAT",
+            "float" or "float4" => "FLOAT",
             "double" => "DOUBLE",
             "json" => "JSON",
+            _ when t.StartsWith("varchar") => $"VARCHAR({c.Length ?? 255})",
             _ => MapByHeuristics(t, c.Length)
         };
     }
 
     private static string MapByHeuristics(string t, int? length)
     {
-        if (t.Contains("char")) return length.HasValue ? $"VARCHAR({length.Value})" : "VARCHAR(255)";
+        if (t.StartsWith("varchar(") || t.StartsWith("char(") || t.StartsWith("decimal(") || t.StartsWith("numeric("))
+            return t.ToUpperInvariant();
+        if (t.Contains("char")) return $"VARCHAR({length ?? 255})";
         if (t.Contains("text")) return "TEXT";
-        if (t.Contains("int")) return "INT";
+
         return t.ToUpperInvariant();
     }
 }

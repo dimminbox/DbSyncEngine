@@ -20,6 +20,7 @@ public static class DependencyInjection
 
     private static IServiceCollection AddSteps(this IServiceCollection services)
     {
+        services.AddTransient<EnsureTargetSchemaStep>();
         services.AddTransient<ReadDataStep>();
         services.AddTransient<MapChunkStep>();
         services.AddTransient<GetSyncStep>();

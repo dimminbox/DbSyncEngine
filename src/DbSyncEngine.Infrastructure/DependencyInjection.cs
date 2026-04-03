@@ -8,6 +8,8 @@ using DbSyncEngine.Infrastructure.Persistence.Fabrics;
 using DbSyncEngine.Infrastructure.Persistence.Normalization.Implementation;
 using DbSyncEngine.Infrastructure.Persistence.Repositories;
 using DbSyncEngine.Infrastructure.Persistence.Schema;
+using DbSyncEngine.Infrastructure.Persistence.Schema.Ddl;
+using DbSyncEngine.Infrastructure.Persistence.Schema.Normalization;
 using DbSyncEngine.Infrastructure.Persistence.Schema.Readers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,6 +42,9 @@ public static class DependencyInjection
         services.AddSingleton<MySqlSchemaReader>();
         services.AddSingleton<PostgresSchemaReader>();
         services.AddSingleton<ISchemaReaderFactory, SchemaReaderFactory>();
+        services.AddSingleton<ISchemaBootstrapper, SchemaBootstrapper>();
+        services.AddSingleton<ISchemaNormalizerFactory, SchemaNormalizerFactory>();
+        services.AddSingleton<ITargetDdlGeneratorFactory, TargetDdlGeneratorFactory>();
         return services;
     }
 
@@ -57,6 +62,9 @@ public static class DependencyInjection
         services.AddSingleton<IValueNormalizer, MySqlValueNormalizer>();
         services.AddSingleton<IValueNormalizer, PostgresValueNormalizer>();
         services.AddSingleton<IValueNormalizerFactory, ValueNormalizerFactory>();
+
+        services.AddSingleton<MySqlSchemaNormalizer>();
+        services.AddSingleton<PostgresSchemaNormalizer>();
         return services;
     }
 }

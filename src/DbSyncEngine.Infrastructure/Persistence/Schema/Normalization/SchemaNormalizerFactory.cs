@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DbSyncEngine.Infrastructure.Persistence.Schema.Normalization;
 
-public class SchemaNormalizerFactory
+public class SchemaNormalizerFactory : ISchemaNormalizerFactory
 {
     private readonly IServiceProvider _provider;
     private readonly IDictionary<string, Type> _map;
@@ -14,7 +14,7 @@ public class SchemaNormalizerFactory
         _map = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase)
         {
             ["MySQL"] = typeof(MySqlSchemaNormalizer),
-            ["Postgres"] = typeof(PostgresSchemaNormalizer),
+            ["PostgreSQL"] = typeof(PostgresSchemaNormalizer),
             // добавить другие провайдеры по мере необходимости
         };
     }

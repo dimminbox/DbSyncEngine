@@ -39,14 +39,39 @@ public class PostgresSchemaReader : ISchemaReader
         {
             Name = table,
             PrimaryKey = ctx.Config.Key,
-            Columns = columns.Select(c => new ColumnDefinition
+            Columns = columns.Select(c =>
             {
-                Name = c.Name,
-                Type = c.Type,
-                IsNullable = c.IsNullable,
-                Length = c.Length,
-                DefaultValue = c.Default
+                var kind = IsPostgresIdentity(c.Type, c.Default)
+                    ? ColumnKind.Identity
+                    : ColumnKind.Normal;
+
+                return new ColumnDefinition
+                {
+                    Name = c.Name,
+                    Type = c.Type,
+                    IsNullable = c.IsNullable,
+                    Length = c.Length,
+                    DefaultValue = c.Default,
+                    Kind = kind
+                };
             }).ToList()
         };
+    }
+
+    private static bool IsPostgresIdentity(string type, string? defaultValue)
+    {
+        if (!string.IsNullOrWhiteSpace(defaultValue) &&
+            defaultValue.Contains("nextval(", StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        var t = type.Trim().ToLowerInvariant();
+
+        if (t is "serial" or "serial4" or "serial8" or "bigserial")
+            return true;
+
+        if (t.Contains("generated") && t.Contains("identity"))
+            return true;
+
+        return false;
     }
 }

@@ -29,6 +29,7 @@ public class FullSyncStrategy : ISyncStrategy
         var steps = new List<ISyncStep>
         {
             scope.ServiceProvider.GetRequiredService<GetSyncStep>(),
+            scope.ServiceProvider.GetRequiredService<EnsureTargetSchemaStep>(),
             scope.ServiceProvider.GetRequiredService<ReadDataStep>(),
             scope.ServiceProvider.GetRequiredService<MapChunkStep>(),
             scope.ServiceProvider.GetRequiredService<WriteDataStep>(),

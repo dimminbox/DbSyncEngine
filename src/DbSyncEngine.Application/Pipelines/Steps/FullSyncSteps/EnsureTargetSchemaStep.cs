@@ -1,11 +1,12 @@
 using DbSyncEngine.Application.Persistence.Schema;
+using DbSyncEngine.Application.Pipelines.Abstractions;
 using DbSyncEngine.Application.Pipelines.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace DbSyncEngine.Application.Pipelines.Steps.FullSyncSteps;
 
-public class EnsureTargetSchemaStep
+public class EnsureTargetSchemaStep : ISyncStep
 {
     private readonly ISchemaBootstrapper _bootstrapper;
     private readonly ISchemaNormalizerFactory _normalizerFactory;
@@ -32,7 +33,8 @@ public class EnsureTargetSchemaStep
         var sourceTable = await _bootstrapper.ReadSourceSchemaAsync(ctx, ctx.CancellationToken);
         var normalizerCtx = new NormalizerContext
         {
-            TargetProvider = ctx.Config.Target.Provider, TargetSchema = ctx.Config.Target.Schema,
+            TargetProvider = ctx.Config.Target.Provider, 
+            TargetSchema = ctx.Config.Target.Schema,
             Options = ctx.Config.NormalizerOptions
         };
         var normalizer = _normalizerFactory.Create(normalizerCtx);
