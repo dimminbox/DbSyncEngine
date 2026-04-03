@@ -22,7 +22,7 @@ public class TableDataRepositoryFactory : ITableDataRepositoryFactory
         return provider switch
         {
             "MySQL"    => new MySqlTableDataRepository((MySqlConnection)connection),
-            "Postgres" => new PostgresTableDataRepository((NpgsqlConnection)connection),
+            "PostgreSQL" => new PostgresTableDataRepository((NpgsqlConnection)connection),
             _ => throw new NotSupportedException($"Unsupported provider: {provider}")
         };
     }

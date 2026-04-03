@@ -18,8 +18,8 @@ public class SyncEntityConfig
     public NormalizerOptions NormalizerOptions { get; init; }
     public string Key { get; set; } = default!;
 
-    public int ChunkSize { get; set; } = 10000;
-    public int InsertBatchSize { get; set; } = 5000;
+    public int ChunkSize { get; set; } = 10;
+    public int InsertBatchSize { get; set; } = 2;
     public int MaxInsertRetries { get; set; } = 3;
     public int IntervalSeconds { get; set; } = 10;
     public SyncDirection Direction { get; set; }

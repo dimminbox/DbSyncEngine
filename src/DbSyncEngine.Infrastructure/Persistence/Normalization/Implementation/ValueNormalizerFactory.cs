@@ -15,7 +15,7 @@ public class ValueNormalizerFactory : IValueNormalizerFactory
         _map = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase)
         {
             ["MySQL"]    = typeof(MySqlValueNormalizer),
-            ["Postgres"] = typeof(PostgresValueNormalizer),
+            ["PostgreSQL"] = typeof(PostgresValueNormalizer),
         };
     }
     

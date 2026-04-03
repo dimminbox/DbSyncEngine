@@ -33,14 +33,13 @@ public class EnsureTargetSchemaStep : ISyncStep
         var sourceTable = await _bootstrapper.ReadSourceSchemaAsync(ctx, ctx.CancellationToken);
         var normalizerCtx = new NormalizerContext
         {
-            TargetProvider = ctx.Config.Target.Provider, 
+            TargetProvider = ctx.Config.Target.Provider,
             TargetSchema = ctx.Config.Target.Schema,
             Options = ctx.Config.NormalizerOptions
         };
         var normalizer = _normalizerFactory.Create(normalizerCtx);
         var normalized = normalizer.Normalize(sourceTable, normalizerCtx);
         await _bootstrapper.ApplyNormalizedTableAsync(ctx, normalized, ctx.CancellationToken);
-
 
         await next();
     }

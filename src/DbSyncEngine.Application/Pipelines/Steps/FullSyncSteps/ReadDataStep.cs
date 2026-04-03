@@ -33,7 +33,7 @@ public class ReadDataStep : ISyncStep
             ctx.Config.Columns,
             ctx.Config.Key,
             lastKeyString,
-            ctx.Config.Source.ChunkSize,
+            ctx.Config.ChunkSize,
             ctx.CancellationToken);
 
         _logger.LogInformation("Read {Count} rows", rows.Count);

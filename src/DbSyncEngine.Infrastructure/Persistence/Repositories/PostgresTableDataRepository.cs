@@ -24,7 +24,7 @@ public class PostgresTableDataRepository : ITableDataRepository
         CancellationToken ct)
     {
         // Экранируем имена колонок и таблиц
-        var columnList = string.Join(",", columns.Select(c => $"\"{c}\""));
+        var columnList = columns.Any() ? string.Join(",", columns.Select(c => $"\"{c}\"")) : "*";
 
         var whereClause = lastKey != null
             ? $"WHERE \"{keyColumn}\" > @lastKey"
@@ -38,13 +38,13 @@ public class PostgresTableDataRepository : ITableDataRepository
             LIMIT @batchSize";
 
 
-        var rows = await _connection.QueryAsync<IDictionary<string, object?>>(
+        var rows = await _connection.QueryAsync<dynamic>(
             new CommandDefinition(
                 sql,
                 new { lastKey, batchSize },
                 cancellationToken: ct));
 
-        return rows.Select(r => new RowData(r.AsReadOnly())).ToList();
+        return rows.Select(r => new RowData((IDictionary<string, object?>)r)).ToList();
     }
 
     public async Task WriteChunkAsync(

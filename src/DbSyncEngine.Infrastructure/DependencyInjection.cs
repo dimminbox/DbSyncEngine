@@ -65,6 +65,9 @@ public static class DependencyInjection
 
         services.AddSingleton<MySqlSchemaNormalizer>();
         services.AddSingleton<PostgresSchemaNormalizer>();
+
+        services.AddSingleton<MySqlValueNormalizer>();
+        services.AddSingleton<PostgresValueNormalizer>();
         return services;
     }
 }
