@@ -6,7 +6,7 @@ using Npgsql;
 
 namespace DbSyncEngine.Infrastructure.Persistence.Repositories;
 
-public class PostgresTableDataRepository : ITableDataRepository
+public class PostgresTableDataRepository : TableDataRepositoryBase, ITableDataRepository
 {
     private readonly NpgsqlConnection _connection;
 
@@ -19,16 +19,16 @@ public class PostgresTableDataRepository : ITableDataRepository
         string tableName,
         IReadOnlyList<string> columns,
         string keyColumn,
-        object? lastKey,
+        string? lastKey,
+        string lastKeyType,
         int batchSize,
         CancellationToken ct)
     {
         // Экранируем имена колонок и таблиц
         var columnList = columns.Any() ? string.Join(",", columns.Select(c => $"\"{c}\"")) : "*";
 
-        var whereClause = lastKey != null
-            ? $"WHERE \"{keyColumn}\" > @lastKey"
-            : string.Empty;
+        var lastKeyTyped = ConvertKey(lastKey, lastKeyType);
+        var whereClause = BuildWhereClause(keyColumn, lastKeyTyped);
 
         var sql = $@"
             SELECT {columnList}
@@ -41,7 +41,7 @@ public class PostgresTableDataRepository : ITableDataRepository
         var rows = await _connection.QueryAsync<dynamic>(
             new CommandDefinition(
                 sql,
-                new { lastKey, batchSize },
+                new { lastKeyTyped, batchSize },
                 cancellationToken: ct));
 
         return rows.Select(r => new RowData((IDictionary<string, object?>)r)).ToList();

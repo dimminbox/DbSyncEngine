@@ -4,25 +4,25 @@ public static class SyncProcessSql
 {
     public const string GetByCompositeKey = @"
         SELECT 
-            id,
-            entity_name,
-            source_provider,
-            target_provider,
-            direction,
-            last_processed_key,
-            is_completed,
-            restart_requested,
-            last_updated_utc,
-            total_processed_rows,
-            total_write_errors,
-            restart_count
+            id AS Id,
+            entity_name AS EntityName,
+            source_provider AS SourceProvider,
+            target_provider AS TargetProvider,
+            direction AS DirectionString,
+            last_processed_key AS LastProcessedKey,
+            last_processed_key_type AS LastProcessedKeyType,
+            is_completed AS IsCompleted,
+            restart_requested AS RestartRequested,
+            last_updated_utc AS LastUpdatedUtc,
+            total_processed_rows AS TotalProcessedRows,
+            total_write_errors AS TotalWriteErrors,
+            restart_count AS RestartCount
         FROM sync_process
         WHERE entity_name = @EntityName
           AND source_provider = @SourceProvider
           AND target_provider = @TargetProvider
           AND direction = @DirectionString
-        LIMIT 1;
-    ";
+        LIMIT 1;";
 
     public const string GetById = @"
         SELECT 
@@ -32,6 +32,7 @@ public static class SyncProcessSql
             target_provider,
             direction,
             last_processed_key,
+            last_processed_key_type,
             is_completed,
             restart_requested,
             last_updated_utc,
@@ -49,6 +50,7 @@ public static class SyncProcessSql
             target_provider,
             direction,
             last_processed_key,
+            last_processed_key_type,
             is_completed,
             restart_requested,
             last_updated_utc,

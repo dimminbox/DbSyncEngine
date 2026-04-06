@@ -33,9 +33,14 @@ public class WriteDataStep : ISyncStep
 
         var repo = _factory.Create(ctx.Config.Target.Provider, ctx.Config.Target.ConnectionString);
 
+        
+        var columns = ctx.Config.Columns?.Count > 0
+            ? ctx.Config.Columns
+            : rows[0].Values.Keys.ToList();
+        
         await repo.WriteChunkAsync(
             tableName: ctx.Config.Target.Table,
-            columns: ctx.Config.Columns,
+            columns: columns,
             rows: rows,
             ct: ctx.CancellationToken);
 

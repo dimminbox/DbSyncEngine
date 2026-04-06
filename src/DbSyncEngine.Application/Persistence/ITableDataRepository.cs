@@ -9,7 +9,8 @@ public interface ITableDataRepository
         string tableName,
         IReadOnlyList<string> columns,
         string keyColumn,
-        object? lastKey,
+        string? lastKey,
+        string lastKeyType,
         int batchSize,
         CancellationToken ct);
 

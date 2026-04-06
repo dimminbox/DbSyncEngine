@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using DbSyncEngine.Domain.SyncProcessAggregate.Enums;
 
 namespace DbSyncEngine.Domain.SyncProcessAggregate;
@@ -8,11 +9,11 @@ public class SyncProcess
     public string EntityName { get; private set; }
     public string SourceProvider { get; private set; }
     public string TargetProvider { get; private set; }
-
     public SyncDirection Direction { get; private set; }
     public string DirectionString => Direction.ToString();
 
     public string LastProcessedKey { get; private set; }
+    public string LastProcessedKeyType { get; private set; }
 
     public bool IsCompleted { get; private set; }
 

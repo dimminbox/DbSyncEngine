@@ -13,6 +13,7 @@ public class SyncProcessSchemaInitializer
             target_provider TEXT NOT NULL,
             direction TEXT NOT NULL,
             last_processed_key TEXT NULL,
+            last_processed_key_type TEXT NULL,
             is_completed INTEGER NOT NULL DEFAULT 0,
             restart_requested INTEGER NOT NULL DEFAULT 0,
             last_updated_utc TEXT NOT NULL DEFAULT (datetime('now')),

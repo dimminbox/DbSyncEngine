@@ -22,17 +22,16 @@ public class ReadDataStep : ISyncStep
     {
         var repo = _factory.Create(ctx.Config.Source.Provider, ctx.Config.Source.ConnectionString);
 
-        var lastKeyString = ctx.Process.LastProcessedKey?.ToString();
-
         _logger.LogInformation(
             "Reading chunk from {Table}, starting from key = {Key}, size = {Size}",
-            ctx.Config.Source.Table, lastKeyString, ctx.Config.ChunkSize);
+            ctx.Config.Source.Table, ctx.Process.LastProcessedKey, ctx.Config.ChunkSize);
 
         var rows = await repo.ReadChunkAsync(
             ctx.Config.Source.Table,
             ctx.Config.Columns,
             ctx.Config.Key,
-            lastKeyString,
+            ctx.Process.LastProcessedKey,
+            ctx.Process.LastProcessedKeyType,
             ctx.Config.ChunkSize,
             ctx.CancellationToken);
 
