@@ -39,7 +39,8 @@ public class GetSyncStep : ISyncStep
                 config.Name,
                 config.Source.Provider,
                 config.Target.Provider,
-                ctx.Direction);
+                ctx.Direction,
+                config.Source.KeyType);
 
             await repo.SaveAsync(process, ctx.CancellationToken);
 

@@ -64,6 +64,7 @@ public static class SyncProcessSql
             @TargetProvider,
             @DirectionString,
             @LastProcessedKey,
+            @LastProcessedKeyType,
             @IsCompleted,
             @RestartRequested,
             @LastUpdatedUtc,

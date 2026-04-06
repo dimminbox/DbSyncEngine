@@ -9,4 +9,5 @@ public class DbEndpoint
     public string? Schema { get; set; }
     public List<string> Columns { get; set; } = new();
     public string Key { get; set; } = default!;
+    public string KeyType { get; set; } = default!;
 }

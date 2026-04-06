@@ -35,12 +35,14 @@ public class SyncProcess
         string entityName,
         string sourceProvider,
         string targetProvider,
-        SyncDirection direction)
+        SyncDirection direction,
+        string lastProcessedKeyType)
     {
         EntityName = entityName;
         SourceProvider = sourceProvider;
         TargetProvider = targetProvider;
         Direction = direction;
+        LastProcessedKeyType = lastProcessedKeyType;
         ResetInternal();
     }
 
@@ -48,8 +50,9 @@ public class SyncProcess
         string entityName,
         string sourceProvider,
         string targetProvider,
-        SyncDirection direction)
-        => new SyncProcess(entityName, sourceProvider, targetProvider, direction);
+        SyncDirection direction,
+        string lastProcessedKeyType)
+        => new SyncProcess(entityName, sourceProvider, targetProvider, direction, lastProcessedKeyType);
 
     public void MarkProcessed(string key, long rows)
     {

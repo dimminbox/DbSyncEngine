@@ -50,9 +50,23 @@ public class MySqlTableDataRepository : TableDataRepositoryBase, ITableDataRepos
             BulkCopyTimeout = 0
         };
 
+        var first = rows.FirstOrDefault();
+        var columnTypes = new Dictionary<string, Type>();
+
+        if (first != null)
+        {
+            foreach (var kv in first.Values)
+            {
+                columnTypes[kv.Key] = kv.Value?.GetType() ?? typeof(object);
+            }
+        }
+        
         var table = new DataTable();
         foreach (var col in columns)
-            table.Columns.Add(col);
+        {
+            var type = columnTypes[col];
+            table.Columns.Add(col, type);
+        }
 
         foreach (var row in rows)
         {

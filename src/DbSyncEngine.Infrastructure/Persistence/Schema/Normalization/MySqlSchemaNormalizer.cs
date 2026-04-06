@@ -71,13 +71,16 @@ namespace DbSyncEngine.Infrastructure.Persistence.Schema.Normalization
             if (string.IsNullOrWhiteSpace(sourceType)) return "TEXT";
 
             var t = sourceType.Trim().ToLowerInvariant();
-
+            
+            if (t.StartsWith("timestamp"))
+                return "DATETIME";
+            
             if (kind == ColumnKind.Identity)
                 return "INT AUTO_INCREMENT";
 
             if (t.StartsWith("varchar"))
                 return $"VARCHAR({length ?? opts.DefaultVarcharLength})";
-
+            
             return t switch
             {
                 "char" => length.HasValue ? $"CHAR({length.Value})" : "CHAR(1)",
