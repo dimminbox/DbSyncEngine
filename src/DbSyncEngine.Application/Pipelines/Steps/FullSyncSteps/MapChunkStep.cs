@@ -34,8 +34,8 @@ public class MapChunkStep : ISyncStep
 
         var normalized = new List<RowData>(batch.Count);
 
-        var columns = ctx.Config.Columns?.Count > 0
-            ? ctx.Config.Columns
+        var columns = ctx.Config.Source.Columns?.Count > 0
+            ? ctx.Config.Source.Columns
             : batch[0].Values.Keys.ToList();
 
         foreach (var row in batch)
@@ -47,7 +47,7 @@ public class MapChunkStep : ISyncStep
                 row.TryGetValue(column, out var value);
                 var normalizedValue = normalizer.Normalize(value);
                 newRow.Set(column, normalizedValue);
-            }   
+            }
 
             normalized.Add(newRow);
         }

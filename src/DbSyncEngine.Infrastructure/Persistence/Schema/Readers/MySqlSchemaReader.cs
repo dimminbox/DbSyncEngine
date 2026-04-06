@@ -34,7 +34,7 @@ public class MySqlSchemaReader : ISchemaReader
         return new TableDefinition
         {
             Name = table,
-            PrimaryKey = ctx.Config.Key,
+            PrimaryKey = ctx.Config.Source.Key,
             Columns = columns.Select(c => new ColumnDefinition
             {
                 Name = c.Name,

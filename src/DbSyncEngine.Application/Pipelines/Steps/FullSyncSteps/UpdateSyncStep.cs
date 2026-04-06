@@ -41,11 +41,11 @@ public class UpdateSyncStep : ISyncStep
 
         // обновляем прогресс по ключу
         var lastRow = rows.Last();
-        var lastKeyValue = lastRow.GetRaw(config.Key);
+        var lastKeyValue = lastRow.GetRaw(config.Source.Key);
 
         if (lastKeyValue is null)
             throw new InvalidOperationException(
-                $"Key column '{config.Key}' returned null in last row");
+                $"Key column '{config.Source.Key}' returned null in last row");
 
         ctx.Process.UpdateProgress(lastKeyValue);
 

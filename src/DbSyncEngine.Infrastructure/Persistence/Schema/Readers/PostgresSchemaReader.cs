@@ -38,7 +38,7 @@ public class PostgresSchemaReader : ISchemaReader
         return new TableDefinition
         {
             Name = table,
-            PrimaryKey = ctx.Config.Key,
+            PrimaryKey = ctx.Config.Source.Key,
             Columns = columns.Select(c =>
             {
                 var kind = IsPostgresIdentity(c.Type, c.Default)

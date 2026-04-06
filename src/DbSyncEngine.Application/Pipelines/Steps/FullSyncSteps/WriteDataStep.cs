@@ -33,11 +33,11 @@ public class WriteDataStep : ISyncStep
 
         var repo = _factory.Create(ctx.Config.Target.Provider, ctx.Config.Target.ConnectionString);
 
-        
-        var columns = ctx.Config.Columns?.Count > 0
-            ? ctx.Config.Columns
+
+        var columns = ctx.Config.Source.Columns?.Count > 0
+            ? ctx.Config.Source.Columns
             : rows[0].Values.Keys.ToList();
-        
+
         await repo.WriteChunkAsync(
             tableName: ctx.Config.Target.Table,
             columns: columns,
@@ -46,11 +46,11 @@ public class WriteDataStep : ISyncStep
 
         // обновляем прогресс
         var lastRow = rows.Last();
-        var lastKeyValue = lastRow.GetRaw(ctx.Config.Key);
+        var lastKeyValue = lastRow.GetRaw(ctx.Config.Source.Key);
 
         if (lastKeyValue is null)
             throw new InvalidOperationException(
-                $"Key column '{ctx.Config.Key}' returned null in last row");
+                $"Key column '{ctx.Config.Source.Key}' returned null in last row");
 
         ctx.Process.UpdateProgress(lastKeyValue);
 

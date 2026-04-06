@@ -28,8 +28,8 @@ public class ReadDataStep : ISyncStep
 
         var rows = await repo.ReadChunkAsync(
             ctx.Config.Source.Table,
-            ctx.Config.Columns,
-            ctx.Config.Key,
+            ctx.Config.Source.Columns,
+            ctx.Config.Source.Key,
             ctx.Process.LastProcessedKey,
             ctx.Process.LastProcessedKeyType,
             ctx.Config.ChunkSize,
@@ -40,11 +40,11 @@ public class ReadDataStep : ISyncStep
         if (rows.Count > 0)
         {
             var lastRow = rows.Last();
-            var newKey = lastRow.GetRaw(ctx.Config.Key);
+            var newKey = lastRow.GetRaw(ctx.Config.Source.Key);
 
             if (newKey is null)
                 throw new InvalidOperationException(
-                    $"Key column '{ctx.Config.Key}' returned null in last row");
+                    $"Key column '{ctx.Config.Source.Key}' returned null in last row");
 
             ctx.Process.UpdateProgress(newKey);
         }
