@@ -24,6 +24,7 @@ public static class DependencyInjection
         services.AddTransient<ReadDataStep>();
         services.AddTransient<MapChunkStep>();
         services.AddTransient<GetSyncStep>();
+        services.AddTransient<PrepareToWriteDataStep>();
         services.AddTransient<UpdateSyncStep>();
         services.AddTransient<WriteDataStep>();
         return services;

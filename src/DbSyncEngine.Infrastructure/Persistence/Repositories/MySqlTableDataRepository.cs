@@ -1,8 +1,6 @@
-using System.Data;
 using Dapper;
 using DbSyncEngine.Application.Persistence;
 using DbSyncEngine.Application.Pipelines.Common;
-using DbSyncEngine.Infrastructure.Persistence.Abstractions;
 using MySqlConnector;
 
 namespace DbSyncEngine.Infrastructure.Persistence.Repositories;
@@ -41,39 +39,57 @@ public class MySqlTableDataRepository : TableDataRepositoryBase, ITableDataRepos
         return rows.Select(r => new RowData(r.AsReadOnly())).ToList();
     }
 
-    public async Task WriteChunkAsync(string tableName, IReadOnlyList<string> columns, IReadOnlyList<RowData> rows,
+    public async Task WriteChunkAsync(
+        string tableName,
+        IReadOnlyList<string> columns,
+        IReadOnlyList<RowData> rows,
         CancellationToken ct)
     {
-        var bulk = new MySqlBulkCopy(_connection)
-        {
-            DestinationTableName = tableName,
-            BulkCopyTimeout = 0
-        };
+        if (rows.Count == 0)
+            return;
 
-        var first = rows.FirstOrDefault();
-        var columnTypes = new Dictionary<string, Type>();
+        _connection.Open();
+        using var tx = await _connection.BeginTransactionAsync(ct);
 
-        if (first != null)
+        try
         {
-            foreach (var kv in first.Values)
+            var colList = string.Join(",", columns.Select(c => $"`{c}`"));
+            var paramList = string.Join(",", columns.Select(c => $"@{c}"));
+            var sql = $"INSERT INTO `{tableName}` ({colList}) VALUES ({paramList});";
+            
+            foreach (var row in rows)
             {
-                columnTypes[kv.Key] = kv.Value?.GetType() ?? typeof(object);
+                try
+                {
+                    var param = new DynamicParameters();
+
+                    foreach (var col in columns)
+                    {
+                        row.TryGetValue(col, out var v);
+                        param.Add(col, v);
+                    }
+
+                    await _connection.ExecuteAsync(
+                        new CommandDefinition(sql, param, tx, cancellationToken: ct));
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Bad row detected:");
+                    foreach (var kv in row.Values)
+                        Console.WriteLine($"   {kv.Key} = {kv.Value}");
+
+                    Console.WriteLine($"   Error: {ex.Message}");
+                    throw; // пробрасываем, чтобы сработал внешний catch и откатил транзакцию
+                }
             }
-        }
-        
-        var table = new DataTable();
-        foreach (var col in columns)
-        {
-            var type = columnTypes[col];
-            table.Columns.Add(col, type);
-        }
 
-        foreach (var row in rows)
-        {
-            var values = columns.Select(c => row.TryGetValue(c, out var v) ? v : null).ToArray();
-            table.Rows.Add(values);
+            await tx.CommitAsync(ct);
         }
-
-        await bulk.WriteToServerAsync(table, ct);
+        catch (Exception ex)
+        {
+            await tx.RollbackAsync(ct);
+            Console.WriteLine($"[ERROR] Insert batch failed. Rolling back. Error: {ex.Message}");
+            throw;
+        }
     }
 }
