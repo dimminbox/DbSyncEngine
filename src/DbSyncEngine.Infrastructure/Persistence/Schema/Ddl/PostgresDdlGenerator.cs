@@ -88,6 +88,7 @@ public class PostgresDdlGenerator : ITargetDdlGenerator
             "int" or "integer" => "INTEGER",
             "bigint" => "BIGINT",
             "smallint" => "SMALLINT",
+            "tinyint" => "BOOLEAN",
             "boolean" or "bool" => "BOOLEAN",
             "datetime" => "TIMESTAMP",
             "timestamp" => "TIMESTAMP",

@@ -10,14 +10,23 @@ public class MySqlValueNormalizer : IValueNormalizer
 
         return value switch
         {
+            sbyte v when v == 0 || v == 1 => v == 1,
+            byte v when v == 0 || v == 1 => v == 1,
+            short v when v == 0 || v == 1 => v == 1,
+            
             sbyte v => (int)v,
             byte v => (int)v,
             short v => (int)v,
-            long v => (long)v,
+            int v => v,
+            long v => (int)v,
+            
             decimal v => v,
+            
             double v => (float)v,
             float v => v,
+            
             DateTime dt => DateTime.SpecifyKind(dt, DateTimeKind.Utc),
+            
             _ => value
         };
     }

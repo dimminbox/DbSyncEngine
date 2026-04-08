@@ -138,8 +138,8 @@ public class PostgresTableDataRepository : TableDataRepositoryBase, ITableDataRe
                 await writer.WriteAsync(dt, ct);
                 break;
 
-            case long l:
-                await writer.WriteAsync(l, ct);
+            case int i:
+                await writer.WriteAsync(i, ct);
                 break;
 
             case decimal dec:
@@ -150,8 +150,8 @@ public class PostgresTableDataRepository : TableDataRepositoryBase, ITableDataRe
                 await writer.WriteAsync(ft, ct);
                 break;
 
-            case int i:
-                await writer.WriteAsync(i, ct);
+            case bool b:
+                await writer.WriteAsync(b, ct);
                 break;
 
             case string s:
