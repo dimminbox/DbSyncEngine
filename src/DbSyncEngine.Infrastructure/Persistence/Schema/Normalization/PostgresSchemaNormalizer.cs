@@ -20,7 +20,7 @@ namespace DbSyncEngine.Infrastructure.Persistence.Schema.Normalization
                 var colName = ResolveColumnName(c.Name, opts);
                 colName = ApplyCase(colName, opts);
 
-                var mappedType = MapToPostgresType(c.Type, c.Length, opts);
+                var mappedType = MapToPostgresType(c, opts);
 
                 var defaultValue = opts.PreserveDefaults ? c.DefaultValue : null;
 
@@ -34,7 +34,9 @@ namespace DbSyncEngine.Infrastructure.Persistence.Schema.Normalization
                 };
             }).ToList();
 
-            var pk = string.IsNullOrWhiteSpace(sourceTable.PrimaryKey) ? string.Empty : ApplyCase(sourceTable.PrimaryKey, opts);
+            var pk = string.IsNullOrWhiteSpace(sourceTable.PrimaryKey)
+                ? string.Empty
+                : ApplyCase(sourceTable.PrimaryKey, opts);
 
             return new TableDefinition
             {
@@ -64,37 +66,73 @@ namespace DbSyncEngine.Infrastructure.Persistence.Schema.Normalization
             return opts.PreserveCase ? name : name.ToLowerInvariant();
         }
 
-        private static string MapToPostgresType(string sourceType, int? length, NormalizerOptions opts)
+        private static string MapToPostgresType(ColumnDefinition c, NormalizerOptions opts)
         {
-            if (string.IsNullOrWhiteSpace(sourceType)) return "TEXT";
+            var t = (c.Type ?? "text").Trim().ToLowerInvariant();
 
-            var t = sourceType.Trim().ToLowerInvariant();
+            // 1) AUTO_INCREMENT → SERIAL4
+            if (c.Kind == ColumnKind.Identity)
+                return "SERIAL4";
 
+            // 2) GUID → uuid
+            if ((t.StartsWith("char") || t.StartsWith("varchar")) && c.Length == 36)
+                return "UUID";
+
+            // 3) varchar
             if (t.StartsWith("varchar"))
-                return $"VARCHAR({length ?? opts.DefaultVarcharLength})";
+                return $"VARCHAR({c.Length ?? opts.DefaultVarcharLength})";
 
-            return t switch
-            {
-                "char" => length.HasValue ? $"CHAR({length.Value})" : "CHAR(1)",
-                "text" => "TEXT",
-                "int" or "integer" => "INTEGER",
-                "bigint" => "BIGINT",
-                "smallint" => "SMALLINT",
-                "boolean" or "bool" => "BOOLEAN",
-                "datetime" => "TIMESTAMP",
-                "timestamp" => "TIMESTAMP",
-                "date" => "DATE",
-                "decimal" or "numeric" => length.HasValue ? $"NUMERIC({length.Value})" : "NUMERIC(18,2)",
-                "float" => "REAL",
-                "double" => "DOUBLE PRECISION",
-                "json" => "JSONB",
-                _ => MapByHeuristics(t, length, opts)
-            };
+            // 4) text
+            if (t.Contains("text"))
+                return "TEXT";
+
+            // 5) decimal → numeric(28,10)
+            if (t.StartsWith("decimal") || t.StartsWith("numeric"))
+                return "NUMERIC(28,10)";
+
+            // 6) double → float4
+            if (t.StartsWith("double"))
+                return "FLOAT4";
+
+            // 7) float → float4
+            if (t.StartsWith("float"))
+                return "FLOAT4";
+
+            // 8) int → int4
+            if (t.StartsWith("int"))
+                return "INT4";
+
+            // 9) bigint
+            if (t.StartsWith("bigint"))
+                return "INT8";
+
+            // 10) smallint
+            if (t.StartsWith("smallint"))
+                return "INT2";
+
+            // 11) datetime / timestamp
+            if (t.Contains("datetime") || t.Contains("timestamp"))
+                return "TIMESTAMP";
+
+            // 12) date
+            if (t == "date")
+                return "DATE";
+
+            // 13) bool
+            if (t == "bool" || t == "boolean")
+                return "BOOLEAN";
+
+            // 14) json
+            if (t == "json")
+                return "JSONB";
+
+            return t.ToUpperInvariant();
         }
 
         private static string MapByHeuristics(string t, int? length, NormalizerOptions opts)
         {
-            if (t.StartsWith("varchar(") || t.StartsWith("char(") || t.StartsWith("numeric(") || t.StartsWith("decimal("))
+            if (t.StartsWith("varchar(") || t.StartsWith("char(") || t.StartsWith("numeric(") ||
+                t.StartsWith("decimal("))
                 return t.ToUpperInvariant();
 
             if (t.Contains("char")) return $"VARCHAR({length ?? opts.DefaultVarcharLength})";

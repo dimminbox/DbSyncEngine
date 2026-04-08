@@ -1,7 +1,7 @@
+using System.Text;
 using Dapper;
 using DbSyncEngine.Application.Persistence;
 using DbSyncEngine.Application.Pipelines.Common;
-using DbSyncEngine.Infrastructure.Persistence.Abstractions;
 using Npgsql;
 
 namespace DbSyncEngine.Infrastructure.Persistence.Repositories;
@@ -58,24 +58,140 @@ public class PostgresTableDataRepository : TableDataRepositoryBase, ITableDataRe
 
         var columnList = string.Join(",", columns.Select(c => $"\"{c}\""));
 
-        // COPY BINARY — самый быстрый способ записи в PostgreSQL
-        using var writer = await _connection.BeginBinaryImportAsync(
-            $"COPY \"{tableName}\" ({columnList}) FROM STDIN (FORMAT BINARY)",
-            ct);
-
-        foreach (var row in rows)
+        try
         {
-            await writer.StartRowAsync(ct);
+            await _connection.OpenAsync(ct);
 
-            foreach (var col in columns)
+            using var writer = await _connection.BeginBinaryImportAsync(
+                $"COPY \"{tableName}\" ({columnList}) FROM STDIN (FORMAT BINARY)",
+                ct);
+
+            foreach (var row in rows)
             {
-                var value = row.Values[col];
+                try
+                {
+                    await writer.StartRowAsync(ct);
 
-                // Npgsql сам определит тип и запишет корректно
-                await writer.WriteAsync(value, ct);
+                    foreach (var col in columns)
+                    {
+                        var value = row.Values[col];
+
+                        try
+                        {
+                            await WriteValueAsync(writer, col, value, ct);
+                        }
+                        catch (Exception exCol)
+                        {
+                            Console.WriteLine("❌ ERROR writing column:");
+                            Console.WriteLine($"   Column: {col}");
+                            Console.WriteLine($"   Value: {value}");
+                            Console.WriteLine($"   Type: {value?.GetType()}");
+                            Console.WriteLine($"   Error: {exCol.Message}");
+                            throw;
+                        }
+                    }
+                }
+                catch (Exception exRow)
+                {
+                    Console.WriteLine("❌ COPY failed on row:");
+                    foreach (var kv in row.Values)
+                        Console.WriteLine($"   {kv.Key} = {kv.Value}");
+
+                    Console.WriteLine($"   Error: {exRow.Message}");
+                    throw;
+                }
             }
+
+            await writer.CompleteAsync(ct);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ERROR] Insert batch failed. Error: {ex.Message}");
+            throw;
+        }
+        finally
+        {
+            await _connection.CloseAsync();
+        }
+    }
+
+
+    private async Task WriteValueAsync(
+        NpgsqlBinaryImporter writer,
+        string col,
+        object? value,
+        CancellationToken ct)
+    {
+        if (value == null)
+        {
+            await writer.WriteNullAsync(ct);
+            return;
         }
 
-        await writer.CompleteAsync(ct);
+        switch (value)
+        {
+            case Guid g:
+                await writer.WriteAsync(g, ct);
+                break;
+
+            case DateTime dt:
+                await writer.WriteAsync(dt, ct);
+                break;
+
+            case long l:
+                await writer.WriteAsync(l, ct);
+                break;
+
+            case decimal dec:
+                await writer.WriteAsync(dec, ct);
+                break;
+
+            case float ft:
+                await writer.WriteAsync(ft, ct);
+                break;
+
+            case int i:
+                await writer.WriteAsync(i, ct);
+                break;
+
+            case string s:
+                var utf8 = Encoding.UTF8.GetBytes(s);
+                if (!IsValidUtf8(utf8))
+                {
+                    Console.WriteLine($"⚠ Non-UTF8 string in column '{col}': {BitConverter.ToString(utf8)}");
+                    utf8 = Encoding.Convert(Encoding.GetEncoding("windows-1251"), Encoding.UTF8, utf8);
+                    s = Encoding.UTF8.GetString(utf8);
+                }
+
+                await writer.WriteAsync(s, ct);
+                break;
+
+            case byte[] bytes:
+                if (!IsValidUtf8(bytes))
+                {
+                    Console.WriteLine($"⚠ Non-UTF8 byte[] in column '{col}': {BitConverter.ToString(bytes)}");
+                    bytes = Encoding.Convert(Encoding.GetEncoding("windows-1251"), Encoding.UTF8, bytes);
+                }
+
+                await writer.WriteAsync(bytes, ct);
+                break;
+
+            default:
+                await writer.WriteAsync(value.ToString(), ct);
+                break;
+        }
+    }
+
+    private static bool IsValidUtf8(byte[] bytes)
+    {
+        try
+        {
+            Encoding.UTF8.GetString(bytes);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }

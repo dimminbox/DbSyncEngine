@@ -24,12 +24,22 @@ public class MySqlSchemaReader : ISchemaReader
         var table = source.Table;
         var schema = source.Schema ?? conn.Database;
 
+        var sql = @"SELECT
+            c.COLUMN_NAME,
+            c.DATA_TYPE,
+            c.IS_NULLABLE,
+            c.CHARACTER_MAXIMUM_LENGTH,
+            c.COLUMN_DEFAULT,
+            (c.COLUMN_KEY = 'PRI') AS is_primary_key
+        FROM information_schema.columns c
+        WHERE c.table_schema = @schema
+          AND c.table_name = @table
+        ORDER BY c.ORDINAL_POSITION;
+        ";
         var columns =
-            await conn.QueryAsync<(string Name, string Type, string IsNullable, int? Length, string? Default)>(@"
-            SELECT column_name, data_type, is_nullable, character_maximum_length, column_default
-            FROM information_schema.columns
-            WHERE table_schema = @schema AND table_name = @table;
-        ", new { schema, table });
+            await conn
+                .QueryAsync<(string Name, string Type, string IsNullable, int? Length, string? Default, bool
+                    isPrimaryKey)>(sql, new { schema, table });
 
         return new TableDefinition
         {
@@ -41,7 +51,8 @@ public class MySqlSchemaReader : ISchemaReader
                 Type = c.Type,
                 IsNullable = c.IsNullable == "YES",
                 Length = c.Length,
-                DefaultValue = c.Default
+                DefaultValue = c.Default,
+                Kind = c.isPrimaryKey ? ColumnKind.Identity : ColumnKind.Normal
             }).ToList()
         };
     }

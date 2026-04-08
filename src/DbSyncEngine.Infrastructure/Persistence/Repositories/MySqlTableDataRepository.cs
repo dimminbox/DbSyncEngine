@@ -26,17 +26,33 @@ public class MySqlTableDataRepository : TableDataRepositoryBase, ITableDataRepos
         var lastKeyTyped = ConvertKey(lastKey, lastKeyType);
         var whereClause = BuildWhereClause(keyColumn, lastKeyTyped);
 
+        var columnList = columns.Any() ? string.Join(",", columns.Select(c => $"\"{c}\"")) : "*";
+
         var sql = $@"
-            SELECT {string.Join(",", columns)}
-            FROM ""{tableName}""
+            SELECT {columnList}
+            FROM {tableName}
             {whereClause}
-            ORDER BY ""{keyColumn}""
+            ORDER BY {keyColumn}
             LIMIT @batchSize";
 
-        var rows = await _connection.QueryAsync<IDictionary<string, object?>>(
-            sql, new { lastKeyTyped, batchSize });
 
-        return rows.Select(r => new RowData(r.AsReadOnly())).ToList();
+        await using var reader = await _connection.ExecuteReaderAsync(
+            new CommandDefinition(sql, new { lastKeyTyped, batchSize }, cancellationToken: ct));
+
+        var result = new List<RowData>();
+        while (await reader.ReadAsync(ct))
+        {
+            var dict = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                var name = reader.GetName(i);
+                var value = reader.IsDBNull(i) ? null : reader.GetValue(i);
+                dict[name] = value;
+            }
+            result.Add(new RowData(dict));
+        }
+
+        return result;
     }
 
     public async Task WriteChunkAsync(
@@ -48,7 +64,7 @@ public class MySqlTableDataRepository : TableDataRepositoryBase, ITableDataRepos
         if (rows.Count == 0)
             return;
 
-        _connection.Open();
+        await _connection.OpenAsync(ct);
         using var tx = await _connection.BeginTransactionAsync(ct);
 
         try
@@ -56,7 +72,7 @@ public class MySqlTableDataRepository : TableDataRepositoryBase, ITableDataRepos
             var colList = string.Join(",", columns.Select(c => $"`{c}`"));
             var paramList = string.Join(",", columns.Select(c => $"@{c}"));
             var sql = $"INSERT INTO `{tableName}` ({colList}) VALUES ({paramList});";
-            
+
             foreach (var row in rows)
             {
                 try
@@ -90,6 +106,10 @@ public class MySqlTableDataRepository : TableDataRepositoryBase, ITableDataRepos
             await tx.RollbackAsync(ct);
             Console.WriteLine($"[ERROR] Insert batch failed. Rolling back. Error: {ex.Message}");
             throw;
+        }
+        finally
+        {
+            await _connection.CloseAsync();
         }
     }
 }
