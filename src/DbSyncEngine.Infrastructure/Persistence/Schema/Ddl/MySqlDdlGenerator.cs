@@ -25,9 +25,14 @@ public class MySqlDdlGenerator : ITargetDdlGenerator
     public string GenerateTableExistsSql(string tableName, string? schema)
     {
         var s = schema ?? "DATABASE()";
-        // returns count
-        return
-            $"SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '{EscapeLiteral(s)}' AND table_name = '{EscapeLiteral(tableName)}';";
+        if (string.IsNullOrWhiteSpace(schema))
+        {
+            return $"SELECT COUNT(*) FROM information_schema.tables " +
+                   $"WHERE table_schema = DATABASE() AND table_name = '{EscapeLiteral(tableName)}';";
+        }
+        
+        return $"SELECT COUNT(*) FROM information_schema.tables " +
+               $"WHERE table_schema = '{EscapeLiteral(schema)}' AND table_name = '{EscapeLiteral(tableName)}';";
     }
 
     public string GenerateTempTableName(string tableName) =>

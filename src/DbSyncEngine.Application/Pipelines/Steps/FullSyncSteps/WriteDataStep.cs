@@ -32,15 +32,16 @@ public class WriteDataStep : ISyncStep
         _logger.LogInformation("Writing {Count} rows to {Table}", rows.Count, ctx.Config.Target.Table);
 
         var repo = _factory.Create(ctx.Config.Target.Provider, ctx.Config.Target.ConnectionString);
-        
+
         var columns = ctx.Config.Source.Columns?.Count > 0
             ? ctx.Config.Source.Columns
             : rows[0].Values.Keys.ToList();
-        
+
         await repo.WriteChunkAsync(
             tableName: ctx.Config.Target.Table,
             columns: columns,
             rows: rows,
+            ctx.Config.ChunkSize,
             ct: ctx.CancellationToken);
 
         // обновляем прогресс

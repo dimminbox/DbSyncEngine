@@ -18,5 +18,6 @@ public interface ITableDataRepository
         string tableName,
         IReadOnlyList<string> columns,
         IReadOnlyList<RowData> rows,
+        int chunkSize,
         CancellationToken ct);
 }

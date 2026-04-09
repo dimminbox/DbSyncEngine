@@ -28,8 +28,8 @@ public static class DependencyInjection
         configuration
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
             .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
-            .AddEnvironmentVariables()
-            .AddUserSecrets<Program>();
+            .AddUserSecrets<Program>()
+            .AddEnvironmentVariables();
         services.BindConfigurations(configuration);
 
         return services;

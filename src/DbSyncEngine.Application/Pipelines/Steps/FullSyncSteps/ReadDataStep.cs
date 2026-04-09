@@ -45,8 +45,6 @@ public class ReadDataStep : ISyncStep
             if (newKey is null)
                 throw new InvalidOperationException(
                     $"Key column '{ctx.Config.Source.Key}' returned null in last row");
-
-            ctx.Process.UpdateProgress(newKey);
         }
 
         ctx.CurrentBatch = rows;

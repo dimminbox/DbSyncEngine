@@ -12,7 +12,7 @@ namespace DbSyncEngine.Infrastructure.Persistence.Schema.Normalization
 
             var opts = ctx.Options ?? new NormalizerOptions();
 
-            var tableName = ApplySchemaPrefix(sourceTable.Name, ctx.TargetSchema);
+            var tableName = sourceTable.Name;
             tableName = ApplyCase(tableName, opts);
 
             var normalizedColumns = sourceTable.Columns.Select(c =>
@@ -52,12 +52,6 @@ namespace DbSyncEngine.Infrastructure.Persistence.Schema.Normalization
             if (opts?.ColumnRenameMap != null && opts.ColumnRenameMap.TryGetValue(sourceName, out var mapped))
                 return mapped;
             return sourceName;
-        }
-
-        private static string ApplySchemaPrefix(string tableName, string? schema)
-        {
-            if (string.IsNullOrWhiteSpace(schema)) return tableName;
-            return tableName.Contains('.') ? tableName : $"{schema}.{tableName}";
         }
 
         private static string ApplyCase(string name, NormalizerOptions opts)

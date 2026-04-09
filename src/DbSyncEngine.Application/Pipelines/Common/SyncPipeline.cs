@@ -20,7 +20,7 @@ public class SyncPipeline : ISyncPipeline
     {
         var context = new SyncContext(_config)
         {
-            Direction = direction, Now = DateTimeOffset.UtcNow
+            Direction = direction, Now = DateTimeOffset.UtcNow, CancellationToken = ct
         };
         return InvokeStepAsync(0, context, ct);
     }

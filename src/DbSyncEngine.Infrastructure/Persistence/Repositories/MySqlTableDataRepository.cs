@@ -1,3 +1,5 @@
+using System.Data;
+using System.Text.RegularExpressions;
 using Dapper;
 using DbSyncEngine.Application.Persistence;
 using DbSyncEngine.Application.Pipelines.Common;
@@ -8,6 +10,16 @@ namespace DbSyncEngine.Infrastructure.Persistence.Repositories;
 public class MySqlTableDataRepository : TableDataRepositoryBase, ITableDataRepository
 {
     private readonly MySqlConnection _connection;
+
+    protected static readonly Regex SafeIdentifier =
+        new("^[A-Za-z_][A-Za-z0-9_]*$", RegexOptions.Compiled);
+
+    protected static string QuoteMySqlIdentifier(string id)
+    {
+        if (!SafeIdentifier.IsMatch(id))
+            throw new ArgumentException($"Unsafe identifier: {id}");
+        return $"`{id}`";
+    }
 
     public MySqlTableDataRepository(MySqlConnection connection)
     {
@@ -23,18 +35,17 @@ public class MySqlTableDataRepository : TableDataRepositoryBase, ITableDataRepos
         int batchSize,
         CancellationToken ct)
     {
+        var safeTable = QuoteMySqlIdentifier(tableName);
+        var safeKey = QuoteMySqlIdentifier(keyColumn);
+
         var lastKeyTyped = ConvertKey(lastKey, lastKeyType);
         var whereClause = BuildWhereClause(keyColumn, lastKeyTyped);
 
-        var columnList = columns.Any() ? string.Join(",", columns.Select(c => $"\"{c}\"")) : "*";
+        var safeCols = columns.Any()
+            ? string.Join(",", columns.Select(QuoteMySqlIdentifier))
+            : "*";
 
-        var sql = $@"
-            SELECT {columnList}
-            FROM {tableName}
-            {whereClause}
-            ORDER BY {keyColumn}
-            LIMIT @batchSize";
-
+        var sql = $@"SELECT {safeCols} FROM {safeTable} {whereClause} ORDER BY {safeKey} LIMIT @batchSize";
 
         await using var reader = await _connection.ExecuteReaderAsync(
             new CommandDefinition(sql, new { lastKeyTyped, batchSize }, cancellationToken: ct));
@@ -49,6 +60,7 @@ public class MySqlTableDataRepository : TableDataRepositoryBase, ITableDataRepos
                 var value = reader.IsDBNull(i) ? null : reader.GetValue(i);
                 dict[name] = value;
             }
+
             result.Add(new RowData(dict));
         }
 
@@ -59,43 +71,66 @@ public class MySqlTableDataRepository : TableDataRepositoryBase, ITableDataRepos
         string tableName,
         IReadOnlyList<string> columns,
         IReadOnlyList<RowData> rows,
+        int chunkSize,
         CancellationToken ct)
     {
         if (rows.Count == 0)
             return;
 
-        await _connection.OpenAsync(ct);
+        if (_connection.State != ConnectionState.Open)
+            await _connection.OpenAsync(ct);
+
         using var tx = await _connection.BeginTransactionAsync(ct);
 
         try
         {
             var colList = string.Join(",", columns.Select(c => $"`{c}`"));
-            var paramList = string.Join(",", columns.Select(c => $"@{c}"));
-            var sql = $"INSERT INTO `{tableName}` ({colList}) VALUES ({paramList});";
 
-            foreach (var row in rows)
+            // Разбиваем на чанки
+            foreach (var chunk in rows.Chunk(chunkSize))
             {
-                try
+                // Формируем VALUES (...), (...), (...)
+                var valuesList = new List<string>();
+                var parameters = new DynamicParameters();
+                var rowIndex = 0;
+
+                foreach (var row in chunk)
                 {
-                    var param = new DynamicParameters();
+                    var paramNames = new List<string>();
 
                     foreach (var col in columns)
                     {
+                        var paramName = $"{col}_{rowIndex}";
                         row.TryGetValue(col, out var v);
-                        param.Add(col, v);
+                        parameters.Add(paramName, v);
+                        paramNames.Add($"@{paramName}");
                     }
 
+                    valuesList.Add($"({string.Join(",", paramNames)})");
+                    rowIndex++;
+                }
+
+                var sql =
+                    $"INSERT INTO `{tableName}` ({colList}) VALUES {string.Join(",", valuesList)};";
+
+                try
+                {
                     await _connection.ExecuteAsync(
-                        new CommandDefinition(sql, param, tx, cancellationToken: ct));
+                        new CommandDefinition(sql, parameters, tx, cancellationToken: ct));
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Bad row detected:");
-                    foreach (var kv in row.Values)
-                        Console.WriteLine($"   {kv.Key} = {kv.Value}");
+                    Console.WriteLine("Bad chunk detected. Dumping rows:");
+
+                    foreach (var row in chunk)
+                    {
+                        foreach (var kv in row.Values)
+                            Console.WriteLine($"   {kv.Key} = {kv.Value}");
+                        Console.WriteLine("---");
+                    }
 
                     Console.WriteLine($"   Error: {ex.Message}");
-                    throw; // пробрасываем, чтобы сработал внешний catch и откатил транзакцию
+                    throw;
                 }
             }
 

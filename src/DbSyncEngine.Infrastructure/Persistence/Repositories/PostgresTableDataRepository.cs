@@ -51,6 +51,7 @@ public class PostgresTableDataRepository : TableDataRepositoryBase, ITableDataRe
         string tableName,
         IReadOnlyList<string> columns,
         IReadOnlyList<RowData> rows,
+        int chunkSize,
         CancellationToken ct)
     {
         if (rows.Count == 0)
@@ -65,7 +66,7 @@ public class PostgresTableDataRepository : TableDataRepositoryBase, ITableDataRe
             using var writer = await _connection.BeginBinaryImportAsync(
                 $"COPY \"{tableName}\" ({columnList}) FROM STDIN (FORMAT BINARY)",
                 ct);
-
+            
             foreach (var row in rows)
             {
                 try

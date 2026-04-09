@@ -11,11 +11,9 @@ namespace DbSyncEngine.Infrastructure.Persistence.Repositories;
 
 public class SyncProcessRepository : DapperRepository<SyncProcess>, ISyncProcessRepository
 {
-    private readonly IDbConnection _connection;
     public SyncProcessRepository(IDbConnection connection)
         : base(connection)
     {
-        _connection = connection;
     }
 
     public Task<SyncProcess?> GetAsync(long id, CancellationToken ct)
@@ -23,8 +21,16 @@ public class SyncProcessRepository : DapperRepository<SyncProcess>, ISyncProcess
 
     public void InitDb()
     {
-        _connection.Open();
-        SyncProcessSchemaInitializer.EnsureCreated(_connection);
+        if (Connection.State != ConnectionState.Open)
+            Connection.Open();
+        try
+        {
+            SyncProcessSchemaInitializer.EnsureCreated(Connection);
+        }
+        finally
+        {
+            Connection.Close();
+        }
     }
 
     public Task<SyncProcess?> GetAsync(

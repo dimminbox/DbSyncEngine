@@ -30,7 +30,7 @@ public class SyncBackgroundService : BackgroundService
                 var strategy = _factory.Create(configEntity);
 
                 var retryPolicy = Policy
-                    .Handle<Exception>()
+                    .Handle<Exception>(ex => ex is not OperationCanceledException)
                     .WaitAndRetryAsync(
                         retryCount: configEntity.MaxInsertRetries,
                         sleepDurationProvider: attempt =>
