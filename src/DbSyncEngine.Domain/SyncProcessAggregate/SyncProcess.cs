@@ -1,15 +1,19 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using DbSyncEngine.Domain.SyncProcessAggregate.Enums;
-using DbSyncEngine.Domain.SyncProcessAggregate.ValueObjects;
 
 namespace DbSyncEngine.Domain.SyncProcessAggregate;
 
 public class SyncProcess
 {
     public long Id { get; private set; }
-
+    public string EntityName { get; private set; }
+    public string SourceProvider { get; private set; }
+    public string TargetProvider { get; private set; }
     public SyncDirection Direction { get; private set; }
+    public string DirectionString => Direction.ToString();
 
-    public ProgressKey? LastProcessedKey { get; private set; }
+    public string LastProcessedKey { get; private set; }
+    public string LastProcessedKeyType { get; private set; }
 
     public bool IsCompleted { get; private set; }
 
@@ -27,16 +31,30 @@ public class SyncProcess
     {
     }
 
-    private SyncProcess(SyncDirection direction)
+    private SyncProcess(
+        string entityName,
+        string sourceProvider,
+        string targetProvider,
+        SyncDirection direction,
+        string lastProcessedKeyType)
     {
+        EntityName = entityName;
+        SourceProvider = sourceProvider;
+        TargetProvider = targetProvider;
         Direction = direction;
+        LastProcessedKeyType = lastProcessedKeyType;
         ResetInternal();
     }
 
-    public static SyncProcess CreateNew(SyncDirection direction)
-        => new SyncProcess(direction);
+    public static SyncProcess CreateNew(
+        string entityName,
+        string sourceProvider,
+        string targetProvider,
+        SyncDirection direction,
+        string lastProcessedKeyType)
+        => new SyncProcess(entityName, sourceProvider, targetProvider, direction, lastProcessedKeyType);
 
-    public void MarkProcessed(ProgressKey key, long rows)
+    public void MarkProcessed(string key, long rows)
     {
         LastProcessedKey = key;
         TotalProcessedRows += rows;
@@ -53,6 +71,11 @@ public class SyncProcess
     {
         IsCompleted = true;
         LastUpdatedUtc = DateTime.UtcNow;
+    }
+
+    public void SetId(long id)
+    {
+        Id = id;
     }
 
     public void RequestRestart()
@@ -81,7 +104,7 @@ public class SyncProcess
     {
         if (newKey is null)
             throw new ArgumentNullException(nameof(newKey));
-        LastProcessedKey = new ProgressKey(newKey.ToString()!);
+        LastProcessedKey = newKey.ToString();
         TotalProcessedRows++;
         LastUpdatedUtc = DateTime.UtcNow;
     }

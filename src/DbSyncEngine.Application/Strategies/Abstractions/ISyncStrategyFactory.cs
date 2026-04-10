@@ -1,8 +1,8 @@
-using DbSyncEngine.Application.Helper;
+using DbSyncEngine.Application.Strategies.Options;
 
 namespace DbSyncEngine.Application.Strategies.Abstractions;
 
 public interface ISyncStrategyFactory
 {
-    ISyncStrategy Create(SyncDirection direction);
+    ISyncStrategy Create(SyncEntityConfig config);
 }

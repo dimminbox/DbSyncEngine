@@ -1,26 +1,26 @@
 using DbSyncEngine.Application.Pipelines.Abstractions;
 using DbSyncEngine.Application.Strategies.Options;
 using Microsoft.Extensions.Options;
-using DbSyncEngine.Application.Helper;
+using DbSyncEngine.Domain.SyncProcessAggregate.Enums;
 
 namespace DbSyncEngine.Application.Pipelines.Common;
 
 public class SyncPipeline : ISyncPipeline
 {
     private readonly IReadOnlyList<ISyncStep> _steps;
-    private readonly FullReloadOptions _options;
-    
-    public SyncPipeline(IEnumerable<ISyncStep> steps, IOptionsMonitor<FullReloadOptions> options)
+    private readonly SyncEntityConfig _config;
+
+    public SyncPipeline(IEnumerable<ISyncStep> steps, SyncEntityConfig config)
     {
         _steps = steps.ToList();
-        _options = options.CurrentValue;
+        _config = config;
     }
 
     public Task RunAsync(SyncDirection direction, CancellationToken ct)
     {
-        var context = new SyncContext(_options)
+        var context = new SyncContext(_config)
         {
-            Direction = direction, Now = DateTimeOffset.UtcNow
+            Direction = direction, Now = DateTimeOffset.UtcNow, CancellationToken = ct
         };
         return InvokeStepAsync(0, context, ct);
     }

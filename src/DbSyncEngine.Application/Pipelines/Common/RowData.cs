@@ -4,16 +4,22 @@ namespace DbSyncEngine.Application.Pipelines.Common;
 
 public class RowData : IRowAccessor
 {
-    public IReadOnlyDictionary<string, object?> Values { get; }
-
-    public RowData(IReadOnlyDictionary<string, object?> values)
+    private readonly Dictionary<string, object?> _values;
+    public IReadOnlyDictionary<string, object?> Values => _values;
+    
+    public RowData()
     {
-        Values = values;
+        _values = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
     }
 
+    public RowData(IDictionary<string, object?> values)
+    {
+        _values = new Dictionary<string, object?>(values, StringComparer.OrdinalIgnoreCase);
+    }
+    
     public object? GetRaw(string column)
-        => Values.TryGetValue(column, out var v) ? v : null;
-
+        => _values.TryGetValue(column, out var v) ? v : null;
+    
     public T Get<T>(string column)
     {
         var raw = GetRaw(column);
@@ -22,4 +28,10 @@ public class RowData : IRowAccessor
 
         return (T)Convert.ChangeType(raw!, typeof(T));
     }
+    
+    public void Set(string column, object? value)
+        => _values[column] = value;
+    
+    public bool TryGetValue(string column, out object? value)
+        => _values.TryGetValue(column, out value);
 }

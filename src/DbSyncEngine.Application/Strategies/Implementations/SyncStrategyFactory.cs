@@ -1,6 +1,8 @@
+using DbSyncEngine.Application.Exceptions;
 using DbSyncEngine.Application.Strategies.Abstractions;
+using DbSyncEngine.Application.Strategies.Options;
+using DbSyncEngine.Domain.SyncProcessAggregate.Enums;
 using Microsoft.Extensions.DependencyInjection;
-using DbSyncEngine.Application.Helper;
 
 namespace DbSyncEngine.Application.Strategies.Implementations;
 
@@ -13,13 +15,12 @@ public class SyncStrategyFactory : ISyncStrategyFactory
         _provider = provider;
     }
 
-    public ISyncStrategy Create(SyncDirection direction)
+    public ISyncStrategy Create(SyncEntityConfig config)
     {
-        return direction switch
+        return config.Direction switch
         {
-            SyncDirection.FullReloadMySqlToPostgres => _provider
-                .GetRequiredService<FullReloadMySqlToPostgresSyncStrategy>(),
-            _ => throw new NotSupportedException()
+            SyncDirection.Full => new FullSyncStrategy(_provider, config),
+            _ => throw new InvalidStrategyException($"Invalid strategy {config.Direction}")
         };
     }
 }
