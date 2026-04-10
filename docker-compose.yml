@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  sync-engine:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: db-sync-engine
+    container_name: db-sync-engine
+    restart: always
+
+    environment:
+      SYNC_CONFIG_PATH: /app/config/config.json
+
+    volumes:
+      - ./config:/app/config:ro
+      - ./data:/app/data

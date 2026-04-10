@@ -1,0 +1,31 @@
+{
+  "Sync": {
+    "Entities": [
+      {
+        "Name": "buffers",
+        "Target": {
+          "Provider": "MySQL",
+          "ConnectionString": "server=***;port=***;database=***;User ID=***;password=****;AllowLoadLocalInfile=true",
+          "Schema": "orders2",
+          "Table": "buffers"
+        },
+        "Source": {
+          "Provider": "PostgreSQL",
+          "ConnectionString": "Host=***; Database=***; Username=***; Password=***;",
+          "Schema": "orders",
+          "Table": "buffers",
+          "Columns": [],
+          "Key": "id",
+          "KeyType": "long"
+        },
+        "ChunkSize": 10000,
+        "InsertBatchSize": 1000,
+        "MaxInsertRetries": 3,
+        "IntervalSeconds": 2,
+        "Direction": "Full"
+      }
+    ],
+    "SyncProcessDb": "Data Source=/app/data/sync_engine.db",
+    "SyncProcessDb1": "Data Source=/home/dimm/projects/c#/db-sync-engine/data/sync_engine.db"
+  }
+}

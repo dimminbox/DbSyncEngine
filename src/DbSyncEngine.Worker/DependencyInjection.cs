@@ -8,7 +8,6 @@ namespace DbSyncEngine.Worker;
 
 public static class DependencyInjection
 {
-   
     public static IServiceCollection AddWorkerServices(
         this IServiceCollection services,
         ConfigurationManager configuration)
@@ -20,18 +19,17 @@ public static class DependencyInjection
 
         return services;
     }
-    
+
 
     private static IServiceCollection AddConfiguration(this IServiceCollection services,
         ConfigurationManager configuration)
     {
-        configuration
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-            .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
-            .AddUserSecrets<Program>()
-            .AddEnvironmentVariables();
-        services.BindConfigurations(configuration);
+        var configPath = Environment.GetEnvironmentVariable("SYNC_CONFIG_PATH");
 
+        configuration
+            .AddJsonFile(configPath, optional: false, reloadOnChange: true);
+        
+        services.BindConfigurations(configuration);
         return services;
     }
 

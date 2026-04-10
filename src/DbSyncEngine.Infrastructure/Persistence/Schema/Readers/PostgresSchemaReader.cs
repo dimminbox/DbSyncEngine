@@ -35,6 +35,12 @@ public class PostgresSchemaReader : ISchemaReader
             WHERE table_schema = @schema AND table_name = @table;
         ", new { schema, table });
 
+        if (!columns.Any())
+        {
+            throw new InvalidOperationException(
+                $"Table '{schema}.{table}' does not exist in schema '{schema}' or has no columns.");
+        }
+
         return new TableDefinition
         {
             Name = table,

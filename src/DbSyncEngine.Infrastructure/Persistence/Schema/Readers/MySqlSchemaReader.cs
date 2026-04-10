@@ -36,10 +36,17 @@ public class MySqlSchemaReader : ISchemaReader
           AND c.table_name = @table
         ORDER BY c.ORDINAL_POSITION;
         ";
+
         var columns =
             await conn
                 .QueryAsync<(string Name, string Type, string IsNullable, int? Length, string? Default, bool
                     isPrimaryKey)>(sql, new { schema, table });
+
+        if (!columns.Any())
+        {
+            throw new InvalidOperationException(
+                $"Table '{schema}.{table}' does not exist in schema '{schema}' or has no columns.");
+        }
 
         return new TableDefinition
         {
