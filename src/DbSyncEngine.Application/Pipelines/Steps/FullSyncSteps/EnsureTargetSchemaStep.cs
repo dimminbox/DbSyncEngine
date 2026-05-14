@@ -39,6 +39,7 @@ public class EnsureTargetSchemaStep : ISyncStep
         };
         var normalizer = _normalizerFactory.Create(normalizerCtx);
         var normalized = normalizer.Normalize(sourceTable, normalizerCtx);
+        ctx.Config.Target.Columns = normalized.Columns.Select(x => x.Name).ToList();
         await _bootstrapper.ApplyNormalizedTableAsync(ctx, normalized, ctx.CancellationToken);
 
         await next();
