@@ -60,6 +60,18 @@ public class PostgresDdlGenerator : ITargetDdlGenerator
         return null;
     }
 
+    public string? GenerateSyncSequenceSql(string tableName, string columnName, string? schema)
+    {
+        var full = Qualify(schema, tableName);
+        var tableRef = string.IsNullOrWhiteSpace(schema)
+            ? EscapeLiteral(tableName)
+            : $"{EscapeLiteral(schema)}.{EscapeLiteral(tableName)}";
+        return $"SELECT setval(" +
+               $"pg_get_serial_sequence('{tableRef}', '{EscapeLiteral(columnName)}'), " +
+               $"(SELECT COALESCE(MAX(\"{Escape(columnName)}\"), 1) FROM {full}), " +
+               $"true);";
+    }
+
     // Helpers
     private static string Qualify(string? schema, string name) =>
         string.IsNullOrWhiteSpace(schema) ? $"\"{Escape(name)}\"" : $"\"{Escape(schema)}\".\"{Escape(name)}\"";

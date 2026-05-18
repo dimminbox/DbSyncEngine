@@ -43,6 +43,7 @@ public static class DependencyInjection
         services.AddSingleton<PostgresSchemaReader>();
         services.AddSingleton<ISchemaReaderFactory, SchemaReaderFactory>();
         services.AddSingleton<ISchemaBootstrapper, SchemaBootstrapper>();
+        services.AddSingleton<ISequenceSynchronizer, SequenceSynchronizer>();
         services.AddSingleton<ISchemaNormalizerFactory, SchemaNormalizerFactory>();
         services.AddSingleton<ITargetDdlGeneratorFactory, TargetDdlGeneratorFactory>();
         return services;

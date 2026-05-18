@@ -1,0 +1,458 @@
+{
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/DependencyInjection.cs": {
+    "mtime": 1775555574.7561371,
+    "hash": "d387ed1c059e23ae69089961ef9e4018"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Normalization/IValueNormalizerFactory.cs": {
+    "mtime": 1774365484.4295359,
+    "hash": "66d3d5607623a4e1788c7231d072de78"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Normalization/IValueNormalizer.cs": {
+    "mtime": 1774365467.062551,
+    "hash": "89993dbd029cbb20f679de0fbd069916"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/obj/Debug/net9.0/DbSyncEngine.Application.GlobalUsings.g.cs": {
+    "mtime": 1774264550.9985354,
+    "hash": "98926837ba69930b8428d861944bcd0a"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/obj/Debug/net9.0/DbSyncEngine.AssemblyInfo.cs": {
+    "mtime": 1774256761.3523738,
+    "hash": "2d3a02968b8973a28790a06a606809f5"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/obj/Debug/net9.0/Orders.DatabaseExchanger.AssemblyInfo.cs": {
+    "mtime": 1774251788.541607,
+    "hash": "7eba984b5bd920b8fe4db5a7f5b5aa8b"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/obj/Debug/net9.0/DbSyncEngine.Application.AssemblyInfo.cs": {
+    "mtime": 1775031151.1060507,
+    "hash": "ff01ad269aa897eadfabde3b09c8fe4c"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/obj/Debug/net9.0/db-sync-engine.GlobalUsings.g.cs": {
+    "mtime": 1774255901.024718,
+    "hash": "98926837ba69930b8428d861944bcd0a"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/obj/Debug/net9.0/Orders.DatabaseExchanger.GlobalUsings.g.cs": {
+    "mtime": 1772180314.6743286,
+    "hash": "98926837ba69930b8428d861944bcd0a"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/obj/Debug/net9.0/db-sync-engine.AssemblyInfo.cs": {
+    "mtime": 1774256728.037432,
+    "hash": "2d3a02968b8973a28790a06a606809f5"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/obj/Debug/net9.0/DbSyncEngine.GlobalUsings.g.cs": {
+    "mtime": 1774256761.3103738,
+    "hash": "98926837ba69930b8428d861944bcd0a"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/obj/Debug/net8.0/Orders.BackgroudDatabaseExchanger.AssemblyInfo.cs": {
+    "mtime": 1772120219.4132388,
+    "hash": "4644ddae8f9beadbdf1f2612a621344e"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/obj/Debug/net8.0/Orders.BackgroudDbExchanger.GlobalUsings.g.cs": {
+    "mtime": 1772121269.6247828,
+    "hash": "98926837ba69930b8428d861944bcd0a"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/obj/Debug/net8.0/Orders.BackgroundDbExchanger.GlobalUsings.g.cs": {
+    "mtime": 1772121911.8934813,
+    "hash": "98926837ba69930b8428d861944bcd0a"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/obj/Debug/net8.0/Orders.BackgroundDbExchanger.AssemblyInfo.cs": {
+    "mtime": 1772121918.8314674,
+    "hash": "5585231df7fc9251b558794e189dae31"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/obj/Debug/net8.0/Orders.BackgroudDatabaseExchanger.GlobalUsings.g.cs": {
+    "mtime": 1772120219.284239,
+    "hash": "98926837ba69930b8428d861944bcd0a"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/obj/Debug/net8.0/Orders.BackgroudDbExchanger.AssemblyInfo.cs": {
+    "mtime": 1772121269.6557827,
+    "hash": "6428b8131d6dd3093bc7b0adfff4c2e4"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/obj/Debug/net10.0/DbSyncEngine.Application.GlobalUsings.g.cs": {
+    "mtime": 1775046848.613004,
+    "hash": "98926837ba69930b8428d861944bcd0a"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/obj/Debug/net10.0/Orders.BackgroundWorker.GlobalUsings.g.cs": {
+    "mtime": 1772120039.2187839,
+    "hash": "98926837ba69930b8428d861944bcd0a"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/obj/Debug/net10.0/DbSyncEngine.Application.AssemblyInfo.cs": {
+    "mtime": 1778862163.3872607,
+    "hash": "41fe615248ddc4bbb39fc871bdfb783a"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/obj/Debug/net10.0/Orders.BackgroundWorker.AssemblyInfo.cs": {
+    "mtime": 1772120039.3717835,
+    "hash": "066e89d3d7572a888ec213ee92eaeb54"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Exceptions/InvalidStrategyException.cs": {
+    "mtime": 1775122133.8948038,
+    "hash": "007c296d8c48c99aa6f3db1a6b65b14e"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Strategies/Implementations/SyncStrategyFactory.cs": {
+    "mtime": 1775131374.1356304,
+    "hash": "23f6d45b47fad1080581ecafc0271f96"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Strategies/Implementations/FullSyncStrategy.cs": {
+    "mtime": 1775555593.4201734,
+    "hash": "30d582e5f4b6025ce80c9a866b440827"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Strategies/Options/SyncEntityConfig.cs": {
+    "mtime": 1775476603.8454225,
+    "hash": "5950d7ae1a230f1e7b3289b645f235a2"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Strategies/Options/NormalizerOptions.cs": {
+    "mtime": 1775212454.6181734,
+    "hash": "50816e55fd7924684b606e47f09519ba"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Strategies/Options/DbEndpoint.cs": {
+    "mtime": 1775499175.6518528,
+    "hash": "53c41e865d5ee96f156daae49ba2b26e"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Strategies/Abstractions/ISyncStrategy.cs": {
+    "mtime": 1774264555.9755287,
+    "hash": "621f8a21b6accff3521e04e3fa31cc59"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Strategies/Abstractions/ISyncStrategyFactory.cs": {
+    "mtime": 1774369419.5250895,
+    "hash": "477449fac310c3615b90ec1aa1a99168"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Pipelines/Common/SyncContext.cs": {
+    "mtime": 1774952321.1773903,
+    "hash": "ace6db46c7ac713b7a3de0b28d8d1254"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Pipelines/Common/SyncPipeline.cs": {
+    "mtime": 1775733870.5662463,
+    "hash": "0c3a385d18fe0bcab5ee1270e177648e"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Pipelines/Common/RowData.cs": {
+    "mtime": 1774365787.8692844,
+    "hash": "1c0dce022867e497ec1ba64805e2c946"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Pipelines/Steps/FullSyncSteps/ReadDataStep.cs": {
+    "mtime": 1775735681.35785,
+    "hash": "de760144af5207c9854ebccbb6a0ce91"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Pipelines/Steps/FullSyncSteps/GetSyncStep.cs": {
+    "mtime": 1775499224.5246935,
+    "hash": "238d45a46a0e30c07607c37ec5c06a5e"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Pipelines/Steps/FullSyncSteps/PrepareToWriteDataStep.cs": {
+    "mtime": 1775555682.1963253,
+    "hash": "518b5ba86da5371afbbf8a213db13337"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Pipelines/Steps/FullSyncSteps/WriteDataStep.cs": {
+    "mtime": 1778774538.3497164,
+    "hash": "aed59d07de5e399a92947a4b661dfb0f"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Pipelines/Steps/FullSyncSteps/EnsureTargetSchemaStep.cs": {
+    "mtime": 1778774765.4651437,
+    "hash": "16807f5f053f28f95913d5f8b706bf91"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Pipelines/Steps/FullSyncSteps/MapChunkStep.cs": {
+    "mtime": 1775654635.5524247,
+    "hash": "d9bd04f9af5dd06e2d9f1dddd15db4b9"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Pipelines/Steps/FullSyncSteps/EnsureSchemaOptions.cs": {
+    "mtime": 1774945556.0687737,
+    "hash": "0f98939626bf2ef4feced61b0d9e7689"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Pipelines/Steps/FullSyncSteps/UpdateSyncStep.cs": {
+    "mtime": 1775476681.7082887,
+    "hash": "2585f0d196715eb72a18ceb9ce8fac01"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Pipelines/Abstractions/ISyncStep.cs": {
+    "mtime": 1774264555.750529,
+    "hash": "e6d79187502e0d67a99df7df83ed0907"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Pipelines/Abstractions/ISyncPipeline.cs": {
+    "mtime": 1774450131.014169,
+    "hash": "183aacb71992b17a2668b2e8cb306f46"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Persistence/ISyncProcessRepository.cs": {
+    "mtime": 1775132650.5401275,
+    "hash": "ebce4327e1a14f750211977f2f8b38d3"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Persistence/ITableDataRepository.cs": {
+    "mtime": 1775736595.1262448,
+    "hash": "ba0afea53c4b562e692ea5d8ccb35d4b"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Persistence/ISyncProcessRepositoryFactory.cs": {
+    "mtime": 1774511459.076748,
+    "hash": "a2b3222c55bf89aa9b63c65c11e854a6"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Persistence/ITableDataRepositoryFactory.cs": {
+    "mtime": 1774511485.7127333,
+    "hash": "aa386a51ed349ef42bc3a13a60883cc2"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Persistence/Schema/ISchemaReader.cs": {
+    "mtime": 1774944759.293588,
+    "hash": "6f89b50984e62997f0747198a9cf3371"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Persistence/Schema/TableDefinition.cs": {
+    "mtime": 1775655138.8212702,
+    "hash": "16e795dfebf9d2f38572456f23a64e27"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Persistence/Schema/ISchemaNormalizerFactory.cs": {
+    "mtime": 1774950281.12196,
+    "hash": "febbf535e0070a11bba936e5734c34b1"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Persistence/Schema/ISchemaNormalizer.cs": {
+    "mtime": 1774956452.410467,
+    "hash": "e4f3b17d7a80ca9a4e3686442ea38772"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Persistence/Schema/ISchemaBootstrapper.cs": {
+    "mtime": 1774953874.512566,
+    "hash": "6f03006c1412a226fd4150820f9c6e0f"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/Persistence/Schema/ISchemaReaderFactory.cs": {
+    "mtime": 1774944759.314588,
+    "hash": "225de6995fc218d2fa36bda8d9f50983"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Domain/obj/Debug/net9.0/DbSyncEngine.Domain.AssemblyInfo.cs": {
+    "mtime": 1775031150.870051,
+    "hash": "442e91f74d50b8141fb7179d180de84e"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Domain/obj/Debug/net9.0/DbSyncEngine.Domain.GlobalUsings.g.cs": {
+    "mtime": 1774450042.4961705,
+    "hash": "98926837ba69930b8428d861944bcd0a"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Domain/obj/Debug/net10.0/DbSyncEngine.Domain.AssemblyInfo.cs": {
+    "mtime": 1778862162.9712605,
+    "hash": "ced1402fdf95345811cb4bb97368386d"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Domain/obj/Debug/net10.0/DbSyncEngine.Domain.GlobalUsings.g.cs": {
+    "mtime": 1775046854.143997,
+    "hash": "98926837ba69930b8428d861944bcd0a"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Domain/Exceptions/DomainException.cs": {
+    "mtime": 1774262929.515138,
+    "hash": "511266e5aff59fe357681cf0cf4c93eb"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Domain/SyncProcessAggregate/SyncProcess.cs": {
+    "mtime": 1775499112.622073,
+    "hash": "781b85d1e1e984f03e527948ae0cfbf1"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Domain/SyncProcessAggregate/Enums/SyncDirection.cs": {
+    "mtime": 1774263978.8378985,
+    "hash": "a09094c7ef72c4e4d66bccebfd65ca84"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Domain/SyncProcessAggregate/Abstractions/IRowAccessor.cs": {
+    "mtime": 1774365845.940238,
+    "hash": "fe811687e839deda1998dd1b26ad4966"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/DependencyInjection.cs": {
+    "mtime": 1775217721.6481733,
+    "hash": "325f75dd5bdb399420c12daaa230c632"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/obj/Debug/net9.0/DbSyncEngine.Infrastructure.GlobalUsings.g.cs": {
+    "mtime": 1774275972.2584777,
+    "hash": "98926837ba69930b8428d861944bcd0a"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/obj/Debug/net9.0/DbSyncEngine.Infrastructure.AssemblyInfo.cs": {
+    "mtime": 1775031151.3300505,
+    "hash": "60212d8db22b34449b2e232181d850d6"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/obj/Debug/net10.0/DbSyncEngine.Infrastructure.GlobalUsings.g.cs": {
+    "mtime": 1775046860.695989,
+    "hash": "98926837ba69930b8428d861944bcd0a"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/obj/Debug/net10.0/DbSyncEngine.Infrastructure.AssemblyInfo.cs": {
+    "mtime": 1778862163.578261,
+    "hash": "8583914408f843bf60b63847f2b42c2f"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Normalization/Implementation/PostgresValueNormalizer.cs": {
+    "mtime": 1774436235.3793445,
+    "hash": "deca461ca6103437bf751052e9f0dd75"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Normalization/Implementation/MySqlValueNormalizer.cs": {
+    "mtime": 1775655963.4381142,
+    "hash": "153d158661b90b59f5511c8a4054d759"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Normalization/Implementation/ValueNormalizerFactory.cs": {
+    "mtime": 1775217509.7752666,
+    "hash": "4a9912a43dca41918ca15a8883aaeb2d"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Schema/SchemaBootstrapper.cs": {
+    "mtime": 1774953888.6855612,
+    "hash": "9da7c4b83399276d31a3958655ed4212"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Schema/Normalization/MySqlSchemaNormalizer.cs": {
+    "mtime": 1775735596.3077874,
+    "hash": "1b5f85cdc056cfbd408a63d33f0b32c2"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Schema/Normalization/SchemaNormalizerFactory.cs": {
+    "mtime": 1775206275.3613634,
+    "hash": "bb0b56283e2c0bfaa96a6ab19362c92f"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Schema/Normalization/PostgresSchemaNormalizer.cs": {
+    "mtime": 1778785846.6214516,
+    "hash": "89365ff3fdd01a0cf673442b5e5e2d93"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Schema/Readers/PostgresSchemaReader.cs": {
+    "mtime": 1775817355.607552,
+    "hash": "6e35b92d926d4263d4a09ffb36a22637"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Schema/Readers/SchemaReaderFactory.cs": {
+    "mtime": 1775204630.963355,
+    "hash": "01c019a8283bb9ea347643b9963184b2"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Schema/Readers/MySqlSchemaReader.cs": {
+    "mtime": 1775817387.4015236,
+    "hash": "8f2a1a4751b040aae1d1235fa58e4fd6"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Schema/Ddl/ITargetDdlGeneratorFactory.cs": {
+    "mtime": 1774953110.7688344,
+    "hash": "f2ac133b5d02bf1ebd18529b4fe76c30"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Schema/Ddl/PostgresDdlGenerator.cs": {
+    "mtime": 1775653880.3437974,
+    "hash": "2f38a5e6bad1661806eb769e0a0c0eef"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Schema/Ddl/TargetDdlGeneratorFactory.cs": {
+    "mtime": 1775204497.6066954,
+    "hash": "a3bc4ce8dbfd53de7fcb080b6ed2da53"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Schema/Ddl/MySqlDdlGenerator.cs": {
+    "mtime": 1775734419.1479611,
+    "hash": "9840b75e988585a6d658ad4cf086712c"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Schema/Ddl/ITargetDdlGenerator.cs": {
+    "mtime": 1774953174.3477914,
+    "hash": "d4fb8fd1b2d4902cada32d4b4df837ba"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Schema/SyncProcess/SyncProcessSchemaInitializer.cs": {
+    "mtime": 1775468086.6001751,
+    "hash": "42fa15e3ca5590833a73d01f1ca77cde"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Common/DapperRepository.cs": {
+    "mtime": 1775734927.1788564,
+    "hash": "39751f55d98bc0904946372e155d6af1"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Repositories/TableDataRepositoryBase.cs": {
+    "mtime": 1775749722.520756,
+    "hash": "9952c3b368f3a2c37c00da988f1b3d5c"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Repositories/SyncProcessRepository.cs": {
+    "mtime": 1775734894.167777,
+    "hash": "a231f0d5d3455a08276c4fc73b907184"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Repositories/SyncProcessSql.cs": {
+    "mtime": 1775495909.0150213,
+    "hash": "c4cd066e6e04df324b1ab71d0cf965d7"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Repositories/PostgresTableDataRepository.cs": {
+    "mtime": 1775749798.2176366,
+    "hash": "d3afd1da6fd4b941f9a8075dada7d835"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Repositories/MySqlTableDataRepository.cs": {
+    "mtime": 1775749736.913733,
+    "hash": "c8fd17a47092d53d5931ff537a321698"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Fabrics/TableDataRepositoryFactory.cs": {
+    "mtime": 1775216551.8105626,
+    "hash": "ec4f3e74dddd9a311761afe5d7d5ef08"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Fabrics/SyncProcessRepositoryFactory.cs": {
+    "mtime": 1775143922.298496,
+    "hash": "6705f0f0cc69f2f9035d1952a5a98107"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Fabrics/DbConnectionFactory.cs": {
+    "mtime": 1775204798.9924855,
+    "hash": "a941eec724dcf9ec66e6329c15dd86df"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/Persistence/Abstractions/IDbConnectionFactory.cs": {
+    "mtime": 1774434739.0263665,
+    "hash": "ae2e4ba772e598fd5d29794b6e5c98a2"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Worker/Program.cs": {
+    "mtime": 1775736776.8800268,
+    "hash": "320b890b61af3b3634a7952c55954f6d"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Worker/DependencyInjection.cs": {
+    "mtime": 1775750717.4984128,
+    "hash": "9d22ba43da9266d16c8f0aebd67ba1cc"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Worker/SyncBackgroundService.cs": {
+    "mtime": 1775736754.255068,
+    "hash": "170ff9e2df7151171b42b1134fc07756"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Worker/obj/Debug/net9.0/DbSyncEngine.Worker.AssemblyInfo.cs": {
+    "mtime": 1775031151.2680504,
+    "hash": "db4180e4a7e0ed4ff4e5713f7f279f9e"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Worker/obj/Debug/net9.0/DbSyncEngine.Host.AssemblyInfo.cs": {
+    "mtime": 1774425760.9662323,
+    "hash": "ec4c05e0e70c44bbf745051f1804d7f1"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Worker/obj/Debug/net9.0/DbSyncEngine.Host.GlobalUsings.g.cs": {
+    "mtime": 1774429085.3330014,
+    "hash": "98926837ba69930b8428d861944bcd0a"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Worker/obj/Debug/net9.0/DbSyncEngine.Worker.GlobalUsings.g.cs": {
+    "mtime": 1774429732.3097377,
+    "hash": "98926837ba69930b8428d861944bcd0a"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Worker/obj/Debug/net10.0/DbSyncEngine.Worker.AssemblyInfo.cs": {
+    "mtime": 1778862163.732261,
+    "hash": "0bd82109f800296b1a76fb72b755e548"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Worker/obj/Debug/net10.0/DbSyncEngine.Worker.GlobalUsings.g.cs": {
+    "mtime": 1775046839.317016,
+    "hash": "98926837ba69930b8428d861944bcd0a"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/docker-compose.yml": {
+    "mtime": 1775815679.6657794,
+    "hash": "f647ee80dcd38b983802bb69b8113295"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/README.md": {
+    "mtime": 1775822570.4650228,
+    "hash": "68c4c6e7adb8720455bb5d96f001596b"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/obj/Debug/net9.0/Orders.DatabaseExchanger.csproj.FileListAbsolute.txt": {
+    "mtime": 1773156303.490691,
+    "hash": "da6da24bb190e2318b7577edf3848a04"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/obj/Debug/net9.0/DbSyncEngine.csproj.FileListAbsolute.txt": {
+    "mtime": 1774259693.0111299,
+    "hash": "42091b6475bcfd3d68b1b99e8d7fad3c"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/obj/Debug/net9.0/DbSyncEngine.Application.csproj.FileListAbsolute.txt": {
+    "mtime": 1774451552.5111558,
+    "hash": "4ca08349951a0ce581349d0de4f52014"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/obj/Debug/net8.0/Orders.BackgroudDatabaseExchanger.csproj.FileListAbsolute.txt": {
+    "mtime": 1772120248.321157,
+    "hash": "f3c6d5e89efa37e533eab2dcc0e5a77a"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/obj/Debug/net10.0/Orders.BackgroundWorker.csproj.FileListAbsolute.txt": {
+    "mtime": 1772120042.9697719,
+    "hash": "b6eb5966e48c522e5490f26c4febcdcf"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Application/obj/Debug/net10.0/DbSyncEngine.Application.csproj.FileListAbsolute.txt": {
+    "mtime": 1775047149.1796618,
+    "hash": "c249b38cc41409a7c120526420c8eca7"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Domain/obj/Debug/net9.0/DbSyncEngine.Domain.csproj.FileListAbsolute.txt": {
+    "mtime": 1774451552.3121557,
+    "hash": "f5bdcc8205bc74e91f51d3ecd2326a6e"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Domain/obj/Debug/net10.0/DbSyncEngine.Domain.csproj.FileListAbsolute.txt": {
+    "mtime": 1775047148.948662,
+    "hash": "4144d6b715b186656270cae1ac888213"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/obj/Debug/net9.0/DbSyncEngine.Infrastructure.csproj.FileListAbsolute.txt": {
+    "mtime": 1774451552.6651556,
+    "hash": "638b17d95090e6a15a6237c85b4c5264"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Infrastructure/obj/Debug/net10.0/DbSyncEngine.Infrastructure.csproj.FileListAbsolute.txt": {
+    "mtime": 1775047149.3197808,
+    "hash": "c5dfc6ee777fa8f43c84c038b74f2b98"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Worker/obj/Debug/net9.0/DbSyncEngine.Worker.csproj.FileListAbsolute.txt": {
+    "mtime": 1774511506.9167216,
+    "hash": "533cf4dc7d6fcc23d25d96ec70097bb5"
+  },
+  "/home/dimm/projects/c#/db-sync-engine/src/DbSyncEngine.Worker/obj/Debug/net10.0/DbSyncEngine.Worker.csproj.FileListAbsolute.txt": {
+    "mtime": 1775816216.7825298,
+    "hash": "b7783bfd170c59d997cae4665ec6abb5"
+  }
+}

@@ -35,6 +35,7 @@ public class FullSyncStrategy : ISyncStrategy
             scope.ServiceProvider.GetRequiredService<PrepareToWriteDataStep>(),
             scope.ServiceProvider.GetRequiredService<WriteDataStep>(),
             scope.ServiceProvider.GetRequiredService<UpdateSyncStep>(),
+            scope.ServiceProvider.GetRequiredService<SyncSequencesStep>(),
         };
 
 

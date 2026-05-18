@@ -27,6 +27,7 @@ public static class DependencyInjection
         services.AddTransient<PrepareToWriteDataStep>();
         services.AddTransient<UpdateSyncStep>();
         services.AddTransient<WriteDataStep>();
+        services.AddTransient<SyncSequencesStep>();
         return services;
     }
 

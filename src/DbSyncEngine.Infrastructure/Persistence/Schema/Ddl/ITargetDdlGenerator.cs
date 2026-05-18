@@ -15,4 +15,5 @@ public interface ITargetDdlGenerator
     string? GenerateCopyDataSql(string sourceTable, string tempTable, string? schema);
     string GenerateSwapTableSql(string targetTable, string tempTable, string? schema);
     string? GenerateCleanupAfterSwapSql(string targetTable, string tempTable, string? schema);
+    string? GenerateSyncSequenceSql(string tableName, string columnName, string? schema);
 }

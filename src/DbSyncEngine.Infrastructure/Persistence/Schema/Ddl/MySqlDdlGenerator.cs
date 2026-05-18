@@ -62,6 +62,9 @@ public class MySqlDdlGenerator : ITargetDdlGenerator
         return null;
     }
 
+    // MySQL auto-updates AUTO_INCREMENT when inserting explicit values greater than the current counter.
+    public string? GenerateSyncSequenceSql(string tableName, string columnName, string? schema) => null;
+
     // Helpers
 
     private static string Qualify(string? schema, string name) =>

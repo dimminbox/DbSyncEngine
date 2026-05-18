@@ -63,10 +63,12 @@ public class PostgresTableDataRepository : TableDataRepositoryBase, ITableDataRe
         {
             await _connection.OpenAsync(ct);
 
+            var columnTypes = await GetColumnTypesAsync(tableName, ct);
+
             using var writer = await _connection.BeginBinaryImportAsync(
                 $"COPY \"{tableName}\" ({columnList}) FROM STDIN (FORMAT BINARY)",
                 ct);
-            
+
             foreach (var row in rows)
             {
                 try
@@ -76,10 +78,11 @@ public class PostgresTableDataRepository : TableDataRepositoryBase, ITableDataRe
                     foreach (var col in columns)
                     {
                         var value = row.Values[col];
+                        columnTypes.TryGetValue(col, out var pgType);
 
                         try
                         {
-                            await WriteValueAsync(writer, col, value, ct);
+                            await WriteValueAsync(writer, col, value, pgType, ct);
                         }
                         catch (Exception exCol)
                         {
@@ -116,11 +119,24 @@ public class PostgresTableDataRepository : TableDataRepositoryBase, ITableDataRe
         }
     }
 
+    private async Task<Dictionary<string, string>> GetColumnTypesAsync(string tableName, CancellationToken ct)
+    {
+        const string sql = """
+            SELECT column_name, data_type
+            FROM information_schema.columns
+            WHERE table_name = @tableName
+            """;
+        var rows = await _connection.QueryAsync<(string column_name, string data_type)>(
+            new CommandDefinition(sql, new { tableName }, cancellationToken: ct));
+        return rows.ToDictionary(r => r.column_name, r => r.data_type, StringComparer.OrdinalIgnoreCase);
+    }
+
 
     private async Task WriteValueAsync(
         NpgsqlBinaryImporter writer,
         string col,
         object? value,
+        string? pgType,
         CancellationToken ct)
     {
         if (value == null)
@@ -153,6 +169,13 @@ public class PostgresTableDataRepository : TableDataRepositoryBase, ITableDataRe
 
             case bool b:
                 await writer.WriteAsync(b, ct);
+                break;
+
+            case string s when pgType == "uuid":
+                if (!Guid.TryParse(s, out var guid))
+                    throw new InvalidOperationException(
+                        $"Cannot write value '{s}' to uuid column '{col}': not a valid UUID");
+                await writer.WriteAsync(guid, ct);
                 break;
 
             case string s:
