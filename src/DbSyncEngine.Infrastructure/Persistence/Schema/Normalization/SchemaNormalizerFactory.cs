@@ -13,9 +13,8 @@ public class SchemaNormalizerFactory : ISchemaNormalizerFactory
         _provider = provider;
         _map = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase)
         {
-            ["MySQL"] = typeof(MySqlSchemaNormalizer),
-            ["PostgreSQL"] = typeof(PostgresSchemaNormalizer),
-            // добавить другие провайдеры по мере необходимости
+            [DbProviders.MySql]      = typeof(MySqlSchemaNormalizer),
+            [DbProviders.PostgreSql] = typeof(PostgresSchemaNormalizer),
         };
     }
 
@@ -24,10 +23,7 @@ public class SchemaNormalizerFactory : ISchemaNormalizerFactory
         if (ctx == null) throw new ArgumentNullException(nameof(ctx));
 
         if (!_map.TryGetValue(ctx.TargetProvider, out var type))
-        {
-            // fallback на универсальный нормализатор или бросаем
-            throw new InvalidOperationException($"No schema provider found for {ctx.TargetProvider}");
-        }
+            throw new InvalidOperationException($"No schema normalizer found for provider '{ctx.TargetProvider}'");
 
         return (ISchemaNormalizer)_provider.GetRequiredService(type);
     }

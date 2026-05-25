@@ -1,6 +1,5 @@
 using DbSyncEngine.Application.Pipelines.Abstractions;
 using DbSyncEngine.Application.Strategies.Options;
-using Microsoft.Extensions.Options;
 using DbSyncEngine.Domain.SyncProcessAggregate.Enums;
 
 namespace DbSyncEngine.Application.Pipelines.Common;
@@ -18,16 +17,13 @@ public class SyncPipeline : ISyncPipeline
 
     public Task RunAsync(SyncDirection direction, CancellationToken ct)
     {
-        var context = new SyncContext(_config)
-        {
-            Direction = direction, Now = DateTimeOffset.UtcNow, CancellationToken = ct
-        };
-        return InvokeStepAsync(0, context, ct);
+        var context = new SyncContext(_config, direction, ct);
+        return InvokeStepAsync(0, context);
     }
 
-    private Task InvokeStepAsync(int index, SyncContext context, CancellationToken ct)
+    private Task InvokeStepAsync(int index, SyncContext context)
     {
         if (index >= _steps.Count) return Task.CompletedTask;
-        return _steps[index].HandleAsync(context, () => InvokeStepAsync(index + 1, context, ct));
+        return _steps[index].HandleAsync(context, () => InvokeStepAsync(index + 1, context));
     }
 }

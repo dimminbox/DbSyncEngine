@@ -8,18 +8,18 @@ namespace DbSyncEngine.Application.Strategies.Implementations;
 
 public class SyncStrategyFactory : ISyncStrategyFactory
 {
-    private readonly IServiceProvider _provider;
+    private readonly IServiceScopeFactory _scopeFactory;
 
-    public SyncStrategyFactory(IServiceProvider provider)
+    public SyncStrategyFactory(IServiceScopeFactory scopeFactory)
     {
-        _provider = provider;
+        _scopeFactory = scopeFactory;
     }
 
     public ISyncStrategy Create(SyncEntityConfig config)
     {
         return config.Direction switch
         {
-            SyncDirection.Full => new FullSyncStrategy(_provider, config),
+            SyncDirection.Full => new FullSyncStrategy(_scopeFactory, config),
             _ => throw new InvalidStrategyException($"Invalid strategy {config.Direction}")
         };
     }

@@ -1,7 +1,10 @@
+using System.Data;
 using System.Text;
 using Dapper;
 using DbSyncEngine.Application.Persistence;
 using DbSyncEngine.Application.Pipelines.Common;
+using DbSyncEngine.Infrastructure.Persistence.Exceptions;
+using Microsoft.Extensions.Logging;
 using Npgsql;
 
 namespace DbSyncEngine.Infrastructure.Persistence.Repositories;
@@ -9,10 +12,17 @@ namespace DbSyncEngine.Infrastructure.Persistence.Repositories;
 public class PostgresTableDataRepository : TableDataRepositoryBase, ITableDataRepository
 {
     private readonly NpgsqlConnection _connection;
+    private readonly ILogger<PostgresTableDataRepository> _logger;
+    private readonly string _schema;
 
-    public PostgresTableDataRepository(NpgsqlConnection connection)
+    public PostgresTableDataRepository(
+        NpgsqlConnection connection,
+        ILogger<PostgresTableDataRepository> logger,
+        string? schema = null)
     {
         _connection = connection;
+        _logger = logger;
+        _schema = string.IsNullOrWhiteSpace(schema) ? "public" : schema;
     }
 
     public async Task<IReadOnlyList<RowData>> ReadChunkAsync(
@@ -24,7 +34,6 @@ public class PostgresTableDataRepository : TableDataRepositoryBase, ITableDataRe
         int batchSize,
         CancellationToken ct)
     {
-        // Экранируем имена колонок и таблиц
         var columnList = columns.Any() ? string.Join(",", columns.Select(c => $"\"{c}\"")) : "*";
 
         var lastKeyTyped = ConvertKey(lastKey, lastKeyType);
@@ -36,7 +45,6 @@ public class PostgresTableDataRepository : TableDataRepositoryBase, ITableDataRe
             {whereClause}
             ORDER BY ""{keyColumn}""
             LIMIT @batchSize";
-
 
         var rows = await _connection.QueryAsync<dynamic>(
             new CommandDefinition(
@@ -62,11 +70,15 @@ public class PostgresTableDataRepository : TableDataRepositoryBase, ITableDataRe
         try
         {
             await _connection.OpenAsync(ct);
+            if (_connection.State != ConnectionState.Open)
+                throw new ConnectionException("Cannot open connection");
+
+            var columnTypes = await GetColumnTypesAsync(tableName, ct);
 
             using var writer = await _connection.BeginBinaryImportAsync(
                 $"COPY \"{tableName}\" ({columnList}) FROM STDIN (FORMAT BINARY)",
                 ct);
-            
+
             foreach (var row in rows)
             {
                 try
@@ -76,38 +88,34 @@ public class PostgresTableDataRepository : TableDataRepositoryBase, ITableDataRe
                     foreach (var col in columns)
                     {
                         var value = row.Values[col];
+                        columnTypes.TryGetValue(col, out var pgType);
 
                         try
                         {
-                            await WriteValueAsync(writer, col, value, ct);
+                            await WriteValueAsync(writer, col, value, pgType, ct);
                         }
                         catch (Exception exCol)
                         {
-                            Console.WriteLine("❌ ERROR writing column:");
-                            Console.WriteLine($"   Column: {col}");
-                            Console.WriteLine($"   Value: {value}");
-                            Console.WriteLine($"   Type: {value?.GetType()}");
-                            Console.WriteLine($"   Error: {exCol.Message}");
+                            _logger.LogError(exCol,
+                                "Error writing column {Column} in table {Table} (value={Value}, clrType={ClrType})",
+                                col, tableName, value, value?.GetType().Name);
                             throw;
                         }
                     }
                 }
-                catch (Exception exRow)
+                catch (Exception exRow) when (exRow is not OperationCanceledException)
                 {
-                    Console.WriteLine("❌ COPY failed on row:");
-                    foreach (var kv in row.Values)
-                        Console.WriteLine($"   {kv.Key} = {kv.Value}");
-
-                    Console.WriteLine($"   Error: {exRow.Message}");
+                    var rowDump = string.Join(", ", row.Values.Select(kv => $"{kv.Key}={kv.Value}"));
+                    _logger.LogError(exRow, "COPY failed on row in table {Table}: [{Row}]", tableName, rowDump);
                     throw;
                 }
             }
 
             await writer.CompleteAsync(ct);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            Console.WriteLine($"[ERROR] Insert batch failed. Error: {ex.Message}");
+            _logger.LogError(ex, "COPY batch failed for table {Table}", tableName);
             throw;
         }
         finally
@@ -116,11 +124,24 @@ public class PostgresTableDataRepository : TableDataRepositoryBase, ITableDataRe
         }
     }
 
+    private async Task<Dictionary<string, string>> GetColumnTypesAsync(string tableName, CancellationToken ct)
+    {
+        const string sql = """
+            SELECT column_name, data_type
+            FROM information_schema.columns
+            WHERE table_schema = @schema
+              AND table_name   = @tableName
+            """;
+        var rows = await _connection.QueryAsync<(string column_name, string data_type)>(
+            new CommandDefinition(sql, new { schema = _schema, tableName }, cancellationToken: ct));
+        return rows.ToDictionary(r => r.column_name, r => r.data_type, StringComparer.OrdinalIgnoreCase);
+    }
 
     private async Task WriteValueAsync(
         NpgsqlBinaryImporter writer,
         string col,
         object? value,
+        string? pgType,
         CancellationToken ct)
     {
         if (value == null)
@@ -155,11 +176,20 @@ public class PostgresTableDataRepository : TableDataRepositoryBase, ITableDataRe
                 await writer.WriteAsync(b, ct);
                 break;
 
+            case string s when pgType == "uuid":
+                if (!Guid.TryParse(s, out var guid))
+                    throw new InvalidOperationException(
+                        $"Cannot write value '{s}' to uuid column '{col}': not a valid UUID");
+                await writer.WriteAsync(guid, ct);
+                break;
+
             case string s:
                 var utf8 = Encoding.UTF8.GetBytes(s);
-                if (!IsValidUtf8(utf8))
+                if (!System.Text.Unicode.Utf8.IsValid(utf8))
                 {
-                    Console.WriteLine($"⚠ Non-UTF8 string in column '{col}': {BitConverter.ToString(utf8)}");
+                    _logger.LogWarning(
+                        "Non-UTF8 string detected in column {Column}, attempting windows-1251 conversion",
+                        col);
                     utf8 = Encoding.Convert(Encoding.GetEncoding("windows-1251"), Encoding.UTF8, utf8);
                     s = Encoding.UTF8.GetString(utf8);
                 }
@@ -168,9 +198,11 @@ public class PostgresTableDataRepository : TableDataRepositoryBase, ITableDataRe
                 break;
 
             case byte[] bytes:
-                if (!IsValidUtf8(bytes))
+                if (!System.Text.Unicode.Utf8.IsValid(bytes))
                 {
-                    Console.WriteLine($"⚠ Non-UTF8 byte[] in column '{col}': {BitConverter.ToString(bytes)}");
+                    _logger.LogWarning(
+                        "Non-UTF8 byte[] detected in column {Column}, attempting windows-1251 conversion",
+                        col);
                     bytes = Encoding.Convert(Encoding.GetEncoding("windows-1251"), Encoding.UTF8, bytes);
                 }
 
@@ -180,19 +212,6 @@ public class PostgresTableDataRepository : TableDataRepositoryBase, ITableDataRe
             default:
                 await writer.WriteAsync(value.ToString(), ct);
                 break;
-        }
-    }
-
-    private static bool IsValidUtf8(byte[] bytes)
-    {
-        try
-        {
-            Encoding.UTF8.GetString(bytes);
-            return true;
-        }
-        catch
-        {
-            return false;
         }
     }
 }

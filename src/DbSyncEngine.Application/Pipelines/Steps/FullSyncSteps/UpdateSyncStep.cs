@@ -35,27 +35,27 @@ public class UpdateSyncStep : ISyncStep
                 config.Name,
                 config.Source.Provider,
                 config.Target.Provider);
-
-            return;
         }
+        else
+        {
+            // обновляем прогресс по ключу
+            var lastRow = rows.Last();
+            var lastKeyValue = lastRow.GetRaw(config.Source.Key);
 
-        // обновляем прогресс по ключу
-        var lastRow = rows.Last();
-        var lastKeyValue = lastRow.GetRaw(config.Source.Key);
+            if (lastKeyValue is null)
+                throw new InvalidOperationException(
+                    $"Key column '{config.Source.Key}' returned null in last row");
 
-        if (lastKeyValue is null)
-            throw new InvalidOperationException(
-                $"Key column '{config.Source.Key}' returned null in last row");
+            ctx.Process.UpdateProgress(lastKeyValue);
 
-        ctx.Process.UpdateProgress(lastKeyValue);
+            await repo.SaveAsync(ctx.Process, ctx.CancellationToken);
 
-        await repo.SaveAsync(ctx.Process, ctx.CancellationToken);
-
-        _logger.LogInformation(
-            "Updated sync state for {Entity}: key={Key}, totalRows={Rows}",
-            config.Name,
-            lastKeyValue,
-            ctx.Process.TotalProcessedRows);
+            _logger.LogInformation(
+                "Updated sync state for {Entity}: key={Key}, totalRows={Rows}",
+                config.Name,
+                lastKeyValue,
+                ctx.Process.TotalProcessedRows);
+        }
 
         await next();
     }

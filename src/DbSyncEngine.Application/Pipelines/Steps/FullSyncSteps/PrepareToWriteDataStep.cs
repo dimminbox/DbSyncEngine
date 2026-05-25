@@ -38,7 +38,7 @@ public class PrepareToWriteDataStep : ISyncStep
         // оставляем только первую строку из каждой группы
         var deduped = grouped.Select(g => g.First()).ToList();
 
-        ctx.CurrentBatch = deduped;
+        ctx.SetBatch(deduped);
 
         return next();
     }

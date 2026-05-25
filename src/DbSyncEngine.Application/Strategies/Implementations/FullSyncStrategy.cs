@@ -1,44 +1,30 @@
-using DbSyncEngine.Application.Pipelines.Abstractions;
+using DbSyncEngine.Application.Pipelines;
 using DbSyncEngine.Application.Pipelines.Common;
-using DbSyncEngine.Application.Pipelines.Steps.FullSyncSteps;
 using DbSyncEngine.Application.Strategies.Abstractions;
 using DbSyncEngine.Application.Strategies.Options;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using DbSyncEngine.Domain.SyncProcessAggregate.Enums;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DbSyncEngine.Application.Strategies.Implementations;
 
 public class FullSyncStrategy : ISyncStrategy
 {
-    private readonly IServiceProvider _provider;
+    private readonly IServiceScopeFactory _scopeFactory;
     private readonly SyncEntityConfig _config;
 
-    public FullSyncStrategy(
-        IServiceProvider provider,
-        SyncEntityConfig config)
+    public FullSyncStrategy(IServiceScopeFactory scopeFactory, SyncEntityConfig config)
     {
-        _provider = provider;
+        _scopeFactory = scopeFactory;
         _config = config;
     }
 
     public Task RunAsync(CancellationToken ct)
     {
-        using var scope = _provider.CreateScope();
+        using var scope = _scopeFactory.CreateScope();
 
-        var steps = new List<ISyncStep>
-        {
-            scope.ServiceProvider.GetRequiredService<GetSyncStep>(),
-            scope.ServiceProvider.GetRequiredService<EnsureTargetSchemaStep>(),
-            scope.ServiceProvider.GetRequiredService<ReadDataStep>(),
-            scope.ServiceProvider.GetRequiredService<MapChunkStep>(),
-            scope.ServiceProvider.GetRequiredService<PrepareToWriteDataStep>(),
-            scope.ServiceProvider.GetRequiredService<WriteDataStep>(),
-            scope.ServiceProvider.GetRequiredService<UpdateSyncStep>(),
-        };
+        var assembler = scope.ServiceProvider.GetRequiredService<IFullSyncPipelineAssembler>();
+        var pipeline = new SyncPipeline(assembler.Steps, _config);
 
-
-        var pipeline = new SyncPipeline(steps, _config);
         return pipeline.RunAsync(SyncDirection.Full, ct);
     }
 }

@@ -22,7 +22,7 @@ namespace DbSyncEngine.Infrastructure.Persistence.Schema.Normalization
 
                 var mappedType = MapToPostgresType(c, opts);
 
-                var defaultValue = opts.PreserveDefaults ? c.DefaultValue : null;
+                var defaultValue = opts.PreserveDefaults ? MapDefaultValue(c) : null;
 
                 return new ColumnDefinition
                 {
@@ -66,6 +66,17 @@ namespace DbSyncEngine.Infrastructure.Persistence.Schema.Normalization
             return opts.PreserveCase ? name : name.ToLowerInvariant();
         }
 
+        private static string MapDefaultValue(ColumnDefinition c)
+        {
+            switch (c.Type)
+            {
+                case "tinyint":
+                    bool.TryParse(c.DefaultValue, out var value);
+                    return value.ToString();
+                default:
+                    return String.Empty;
+            }
+        }
         private static string MapToPostgresType(ColumnDefinition c, NormalizerOptions opts)
         {
             var t = (c.Type ?? "text").Trim().ToLowerInvariant();
@@ -126,18 +137,6 @@ namespace DbSyncEngine.Infrastructure.Persistence.Schema.Normalization
             if (t == "json")
                 return "JSONB";
 
-            return t.ToUpperInvariant();
-        }
-
-        private static string MapByHeuristics(string t, int? length, NormalizerOptions opts)
-        {
-            if (t.StartsWith("varchar(") || t.StartsWith("char(") || t.StartsWith("numeric(") ||
-                t.StartsWith("decimal("))
-                return t.ToUpperInvariant();
-
-            if (t.Contains("char")) return $"VARCHAR({length ?? opts.DefaultVarcharLength})";
-            if (t.Contains("text")) return "TEXT";
-            if (t.Contains("int")) return "INTEGER";
             return t.ToUpperInvariant();
         }
     }

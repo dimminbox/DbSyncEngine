@@ -26,7 +26,10 @@ public class RowData : IRowAccessor
         if (raw is T t)
             return t;
 
-        return (T)Convert.ChangeType(raw!, typeof(T));
+        if (raw != null)
+            return (T)Convert.ChangeType(raw, typeof(T));
+        
+        throw new Exception($"Cannot convert column {column} to type {typeof(T)}");
     }
     
     public void Set(string column, object? value)

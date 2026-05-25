@@ -34,13 +34,6 @@ public class SchemaBootstrapper : ISchemaBootstrapper
         return schema;
     }
 
-    public async Task<TableDefinition> ReadTargetSchemaAsync(SyncContext ctx, CancellationToken ct)
-    {
-        var reader = _readerFactory.Create(ctx.Config.Target.Provider);
-        var schema = await reader.ReadAsync(ctx);
-        return schema;
-    }
-
     /// <summary>
     /// Apply normalized schema: create missing tables and replace existing ones according to options.
     /// </summary>
