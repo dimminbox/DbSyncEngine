@@ -47,7 +47,7 @@ public class ReadDataStep : ISyncStep
                     $"Key column '{ctx.Config.Source.Key}' returned null in last row");
         }
 
-        ctx.CurrentBatch = rows;
+        ctx.SetBatch(rows);
 
         await next();
     }

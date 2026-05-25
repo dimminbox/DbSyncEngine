@@ -12,9 +12,9 @@ public class DbConnectionFactory : IDbConnectionFactory
     {
         return provider switch
         {
-            "SQLite" => new SqliteConnection(connectionString),
-            "MySQL"    => new MySqlConnection(connectionString),
-            "PostgreSQL" => new NpgsqlConnection(connectionString),
+            DbProviders.SQLite     => new SqliteConnection(connectionString),
+            DbProviders.MySql      => new MySqlConnection(connectionString),
+            DbProviders.PostgreSql => new NpgsqlConnection(connectionString),
             _ => throw new NotSupportedException($"Unsupported provider: {provider}")
         };
     }

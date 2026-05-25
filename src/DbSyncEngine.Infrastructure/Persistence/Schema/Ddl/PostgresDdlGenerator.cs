@@ -42,21 +42,24 @@ public class PostgresDdlGenerator : ITargetDdlGenerator
 
     public string GenerateSwapTableSql(string targetTable, string tempTable, string? schema)
     {
-        // In Postgres we can perform transactional rename: rename old -> old_bak, temp -> old, then drop old_bak
+        // Transactional rename inside BEGIN/COMMIT:
+        // 1. rename target → backup (random name to avoid conflicts)
+        // 2. rename temp   → target
+        // 3. drop backup   — all inside the same transaction, so no zombie tables are left on failure
         var s = string.IsNullOrEmpty(schema) ? "" : $"\"{Escape(schema)}\".";
         var oldBak = $"{targetTable}__old_{Guid.NewGuid():N}";
         var sb = new System.Text.StringBuilder();
         sb.AppendLine("BEGIN;");
         sb.AppendLine($"ALTER TABLE {s}\"{Escape(targetTable)}\" RENAME TO \"{Escape(oldBak)}\";");
         sb.AppendLine($"ALTER TABLE {s}\"{Escape(tempTable)}\" RENAME TO \"{Escape(targetTable)}\";");
+        sb.AppendLine($"DROP TABLE {s}\"{Escape(oldBak)}\";");
         sb.AppendLine("COMMIT;");
         return sb.ToString();
     }
 
     public string? GenerateCleanupAfterSwapSql(string targetTable, string tempTable, string? schema)
     {
-        var s = string.IsNullOrEmpty(schema) ? "" : $"\"{Escape(schema)}\".";
-        // We don't know exact oldBak name here; recommend no-op and let ReplaceTableAsync handle cleanup if needed.
+        // Cleanup is handled inside GenerateSwapTableSql's transaction — nothing to do here.
         return null;
     }
 

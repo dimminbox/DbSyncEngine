@@ -52,7 +52,7 @@ public class MapChunkStep : ISyncStep
             normalized.Add(newRow);
         }
 
-        ctx.CurrentBatch = normalized;
+        ctx.SetBatch(normalized);
 
         return next();
     }

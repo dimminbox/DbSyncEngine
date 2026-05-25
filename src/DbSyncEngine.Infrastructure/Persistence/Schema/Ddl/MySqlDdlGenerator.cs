@@ -24,7 +24,6 @@ public class MySqlDdlGenerator : ITargetDdlGenerator
 
     public string GenerateTableExistsSql(string tableName, string? schema)
     {
-        var s = schema ?? "DATABASE()";
         if (string.IsNullOrWhiteSpace(schema))
         {
             return $"SELECT COUNT(*) FROM information_schema.tables " +
@@ -48,19 +47,26 @@ public class MySqlDdlGenerator : ITargetDdlGenerator
 
     public string GenerateSwapTableSql(string targetTable, string tempTable, string? schema)
     {
+        // Atomic rename: target → backup, temp → target.
+        // Backup name is deterministic so GenerateCleanupAfterSwapSql can reconstruct it.
+        // Note: if a previous run left a stale backup table, RENAME TABLE will fail — callers
+        // should invoke GenerateCleanupAfterSwapSql before retrying in that case.
         var s = string.IsNullOrEmpty(schema) ? "" : $"`{Escape(schema)}`.";
-        // atomic rename: old -> old__bak, temp -> old
-        var oldBak = $"{targetTable}__old_{Guid.NewGuid():N}";
+        var oldBak = OldBakName(targetTable);
         return
-            $"RENAME TABLE {s}`{Escape(targetTable)}` TO {s}`{Escape(oldBak)}`, {s}`{Escape(tempTable)}` TO {s}`{Escape(targetTable)}`;";
+            $"RENAME TABLE {s}`{Escape(targetTable)}` TO {s}`{Escape(oldBak)}`, " +
+            $"{s}`{Escape(tempTable)}` TO {s}`{Escape(targetTable)}`;";
     }
 
     public string? GenerateCleanupAfterSwapSql(string targetTable, string tempTable, string? schema)
     {
-        // cleanup any old backups by pattern (best-effort). Here we drop the specific old name is not known to caller,
-        // so return empty and let bootstrapper handle explicit drop if needed.
-        return null;
+        var s = string.IsNullOrEmpty(schema) ? "" : $"`{Escape(schema)}`.";
+        var oldBak = OldBakName(targetTable);
+        return $"DROP TABLE IF EXISTS {s}`{Escape(oldBak)}`;";
     }
+
+    // Deterministic backup name derived from targetTable so cleanup SQL can always reconstruct it.
+    private static string OldBakName(string targetTable) => $"{targetTable}__old_bak";
 
     // MySQL auto-updates AUTO_INCREMENT when inserting explicit values greater than the current counter.
     public string? GenerateSyncSequenceSql(string tableName, string columnName, string? schema) => null;

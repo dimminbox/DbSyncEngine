@@ -15,7 +15,6 @@ public class SyncEntityConfig
     public DbEndpoint Target { get; set; } = default!;
     public NormalizerOptions NormalizerOptions { get; init; }
     public int ChunkSize { get; set; } = 10;
-    public int InsertBatchSize { get; set; } = 2;
     public int MaxInsertRetries { get; set; } = 3;
     public int IntervalSeconds { get; set; } = 10;
     public SyncDirection Direction { get; set; }

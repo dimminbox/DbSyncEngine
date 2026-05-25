@@ -31,7 +31,7 @@ public class WriteDataStep : ISyncStep
 
         _logger.LogInformation("Writing {Count} rows to {Table}", rows.Count, ctx.Config.Target.Table);
 
-        var repo = _factory.Create(ctx.Config.Target.Provider, ctx.Config.Target.ConnectionString);
+        var repo = _factory.Create(ctx.Config.Target.Provider, ctx.Config.Target.ConnectionString, ctx.Config.Target.Schema);
 
         var columns = ctx.Config.Target.Columns?.Count > 0
             ? ctx.Config.Target.Columns
@@ -52,10 +52,7 @@ public class WriteDataStep : ISyncStep
             throw new InvalidOperationException(
                 $"Key column '{ctx.Config.Source.Key}' returned null in last row");
 
-        ctx.Process.UpdateProgress(lastKeyValue);
-
-        // очищаем batch
-        ctx.CurrentBatch = Array.Empty<RowData>();
+        ctx.ClearBatch();
 
         await next();
     }

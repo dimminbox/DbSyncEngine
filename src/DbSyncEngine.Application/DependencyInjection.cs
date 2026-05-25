@@ -1,3 +1,4 @@
+using DbSyncEngine.Application.Pipelines;
 using DbSyncEngine.Application.Pipelines.Steps.FullSyncSteps;
 using DbSyncEngine.Application.Strategies.Abstractions;
 using DbSyncEngine.Application.Strategies.Implementations;
@@ -20,14 +21,15 @@ public static class DependencyInjection
 
     private static IServiceCollection AddSteps(this IServiceCollection services)
     {
+        services.AddTransient<GetSyncStep>();
         services.AddTransient<EnsureTargetSchemaStep>();
         services.AddTransient<ReadDataStep>();
         services.AddTransient<MapChunkStep>();
-        services.AddTransient<GetSyncStep>();
         services.AddTransient<PrepareToWriteDataStep>();
-        services.AddTransient<UpdateSyncStep>();
         services.AddTransient<WriteDataStep>();
+        services.AddTransient<UpdateSyncStep>();
         services.AddTransient<SyncSequencesStep>();
+        services.AddTransient<IFullSyncPipelineAssembler, FullSyncPipelineAssembler>();
         return services;
     }
 

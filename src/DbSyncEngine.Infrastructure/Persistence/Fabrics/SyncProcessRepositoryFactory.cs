@@ -25,7 +25,7 @@ public class SyncProcessRepositoryFactory : ISyncProcessRepositoryFactory
 
     public ISyncProcessRepository Create()
     {
-        var conn = _connectionFactory.Create("SQLite", _connectionString);
+        var conn = _connectionFactory.Create(DbProviders.SQLite, _connectionString);
         return new SyncProcessRepository(conn);
     }
 }

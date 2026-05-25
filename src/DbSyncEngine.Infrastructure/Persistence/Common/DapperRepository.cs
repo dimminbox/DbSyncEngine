@@ -26,27 +26,13 @@ public class DapperRepository<T>
         }
     }
 
-    protected async Task<IEnumerable<T>> QueryAsync(string sql, object? param = null)
+    protected async Task<int> ExecuteAsync(string sql, object? param = null)
     {
         try
         {
             if (Connection.State != ConnectionState.Open)
                 Connection.Open();
-            return await Connection.QueryAsync<T>(sql, param);
-        }
-        finally
-        {
-            Connection.Close();
-        }
-    }
-
-    protected Task<int> ExecuteAsync(string sql, object? param = null)
-    {
-        try
-        {
-            if (Connection.State != ConnectionState.Open)
-                Connection.Open();
-            return Connection.ExecuteAsync(sql, param);
+            return await Connection.ExecuteAsync(sql, param);
         }
         finally
         {

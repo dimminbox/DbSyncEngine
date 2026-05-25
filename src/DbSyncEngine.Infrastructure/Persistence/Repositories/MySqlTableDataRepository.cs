@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using Dapper;
 using DbSyncEngine.Application.Persistence;
 using DbSyncEngine.Application.Pipelines.Common;
+using Microsoft.Extensions.Logging;
 using MySqlConnector;
 
 namespace DbSyncEngine.Infrastructure.Persistence.Repositories;
@@ -10,6 +11,7 @@ namespace DbSyncEngine.Infrastructure.Persistence.Repositories;
 public class MySqlTableDataRepository : TableDataRepositoryBase, ITableDataRepository
 {
     private readonly MySqlConnection _connection;
+    private readonly ILogger<MySqlTableDataRepository> _logger;
 
     protected static readonly Regex SafeIdentifier =
         new("^[A-Za-z_][A-Za-z0-9_]*$", RegexOptions.Compiled);
@@ -21,9 +23,10 @@ public class MySqlTableDataRepository : TableDataRepositoryBase, ITableDataRepos
         return $"`{id}`";
     }
 
-    public MySqlTableDataRepository(MySqlConnection connection)
+    public MySqlTableDataRepository(MySqlConnection connection, ILogger<MySqlTableDataRepository> logger)
     {
         _connection = connection;
+        _logger = logger;
     }
 
     public async Task<IReadOnlyList<RowData>> ReadChunkAsync(
@@ -84,12 +87,10 @@ public class MySqlTableDataRepository : TableDataRepositoryBase, ITableDataRepos
 
         try
         {
-            var colList = string.Join(",", columns.Select(c => $"`{c}`"));
+            var colList = string.Join(",", columns.Select(QuoteMySqlIdentifier));
 
-            // Разбиваем на чанки
             foreach (var chunk in rows.Chunk(chunkSize))
             {
-                // Формируем VALUES (...), (...), (...)
                 var valuesList = new List<string>();
                 var parameters = new DynamicParameters();
                 var rowIndex = 0;
@@ -110,36 +111,30 @@ public class MySqlTableDataRepository : TableDataRepositoryBase, ITableDataRepos
                     rowIndex++;
                 }
 
-                var sql =
-                    $"INSERT INTO `{tableName}` ({colList}) VALUES {string.Join(",", valuesList)};";
+                var sql = $"INSERT INTO `{tableName}` ({colList}) VALUES {string.Join(",", valuesList)};";
 
                 try
                 {
                     await _connection.ExecuteAsync(
                         new CommandDefinition(sql, parameters, tx, cancellationToken: ct));
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (ex is not OperationCanceledException)
                 {
-                    Console.WriteLine("Bad chunk detected. Dumping rows:");
-
-                    foreach (var row in chunk)
-                    {
-                        foreach (var kv in row.Values)
-                            Console.WriteLine($"   {kv.Key} = {kv.Value}");
-                        Console.WriteLine("---");
-                    }
-
-                    Console.WriteLine($"   Error: {ex.Message}");
+                    var rowDumps = chunk
+                        .Select(row => string.Join(", ", row.Values.Select(kv => $"{kv.Key}={kv.Value}")));
+                    _logger.LogError(ex,
+                        "Bad chunk detected in table {Table}. Rows: [{Rows}]",
+                        tableName, string.Join(" | ", rowDumps));
                     throw;
                 }
             }
 
             await tx.CommitAsync(ct);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
             await tx.RollbackAsync(ct);
-            Console.WriteLine($"[ERROR] Insert batch failed. Rolling back. Error: {ex.Message}");
+            _logger.LogError(ex, "Insert batch failed, rolling back transaction for table {Table}", tableName);
             throw;
         }
         finally

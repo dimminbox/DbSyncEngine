@@ -7,18 +7,18 @@ public class ValueNormalizerFactory : IValueNormalizerFactory
 {
     private readonly IServiceProvider _provider;
     private readonly Dictionary<string, Type> _map;
-    
+
     public ValueNormalizerFactory(IServiceProvider provider)
     {
         _provider = provider;
 
         _map = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase)
         {
-            ["MySQL"]    = typeof(MySqlValueNormalizer),
-            ["PostgreSQL"] = typeof(PostgresValueNormalizer),
+            [DbProviders.MySql]      = typeof(MySqlValueNormalizer),
+            [DbProviders.PostgreSql] = typeof(PostgresValueNormalizer),
         };
     }
-    
+
     public IValueNormalizer Create(string provider)
     {
         if (!_map.TryGetValue(provider, out var normalizerType))

@@ -6,11 +6,10 @@ public class TargetDdlGeneratorFactory : ITargetDdlGeneratorFactory
 
     public TargetDdlGeneratorFactory()
     {
-        _map = new Dictionary<string, Func<IDictionary<string, string>?, ITargetDdlGenerator>>(StringComparer
-            .OrdinalIgnoreCase)
+        _map = new Dictionary<string, Func<IDictionary<string, string>?, ITargetDdlGenerator>>(StringComparer.OrdinalIgnoreCase)
         {
-            ["MySQL"] = opts => new MySqlDdlGenerator(),
-            ["PostgreSQL"] = opts => new PostgresDdlGenerator()
+            [DbProviders.MySql]      = _ => new MySqlDdlGenerator(),
+            [DbProviders.PostgreSql] = _ => new PostgresDdlGenerator(),
         };
     }
 
