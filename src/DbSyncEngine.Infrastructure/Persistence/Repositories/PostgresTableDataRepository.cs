@@ -25,6 +25,8 @@ public class PostgresTableDataRepository : TableDataRepositoryBase, ITableDataRe
         _schema = string.IsNullOrWhiteSpace(schema) ? "public" : schema;
     }
 
+    private string QualifyTable(string tableName) => $"\"{_schema}\".\"{tableName}\"";
+
     public async Task<IReadOnlyList<RowData>> ReadChunkAsync(
         string tableName,
         IReadOnlyList<string> columns,
@@ -41,7 +43,7 @@ public class PostgresTableDataRepository : TableDataRepositoryBase, ITableDataRe
 
         var sql = $@"
             SELECT {columnList}
-            FROM ""{tableName}""
+            FROM {QualifyTable(tableName)}
             {whereClause}
             ORDER BY ""{keyColumn}""
             LIMIT @batchSize";
@@ -76,7 +78,7 @@ public class PostgresTableDataRepository : TableDataRepositoryBase, ITableDataRe
             var columnTypes = await GetColumnTypesAsync(tableName, ct);
 
             using var writer = await _connection.BeginBinaryImportAsync(
-                $"COPY \"{tableName}\" ({columnList}) FROM STDIN (FORMAT BINARY)",
+                $"COPY {QualifyTable(tableName)} ({columnList}) FROM STDIN (FORMAT BINARY)",
                 ct);
 
             foreach (var row in rows)
@@ -160,16 +162,32 @@ public class PostgresTableDataRepository : TableDataRepositoryBase, ITableDataRe
                 await writer.WriteAsync(dt, ct);
                 break;
 
-            case int i:
-                await writer.WriteAsync(i, ct);
+            case int or long:
+                var longVal = Convert.ToInt64(value);
+                switch (pgType)
+                {
+                    case "smallint":
+                        await writer.WriteAsync((short)longVal, ct);
+                        break;
+                    case "bigint":
+                        await writer.WriteAsync(longVal, ct);
+                        break;
+                    default: // "integer" or unknown - matches Npgsql's default int4 inference
+                        await writer.WriteAsync((int)longVal, ct);
+                        break;
+                }
                 break;
 
             case decimal dec:
                 await writer.WriteAsync(dec, ct);
                 break;
 
-            case float ft:
-                await writer.WriteAsync(ft, ct);
+            case float or double:
+                var dblVal = Convert.ToDouble(value);
+                if (pgType == "double precision")
+                    await writer.WriteAsync(dblVal, ct);
+                else
+                    await writer.WriteAsync((float)dblVal, ct);
                 break;
 
             case bool b:

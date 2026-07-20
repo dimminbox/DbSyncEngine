@@ -52,8 +52,6 @@ public class WriteDataStep : ISyncStep
             throw new InvalidOperationException(
                 $"Key column '{ctx.Config.Source.Key}' returned null in last row");
 
-        ctx.ClearBatch();
-
         await next();
     }
 }
