@@ -42,7 +42,10 @@ public class EnsureTargetSchemaStep : ISyncStep
         ctx.Config.Target.Columns = normalized.Columns.Select(x => x.Name).ToList();
         await _bootstrapper.ApplyNormalizedTableAsync(ctx, normalized, ctx.CancellationToken);
 
-        ctx.Config.Target.Key = ctx.Config.Source.Key;
+        if (string.IsNullOrWhiteSpace(ctx.Config.Target.Key))
+        {
+            ctx.Config.Target.Key = ctx.Config.Source.Key;
+        }
         await next();
     }
 }
